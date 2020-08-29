@@ -1,0 +1,69 @@
+interactions:
+- request:
+    body: '{"profile": {"status_text": "This is a test!", "status_emoji": ":smile:",
+      "status_expiration": 0}}'
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '98'
+      Content-Type:
+      - application/json;charset=utf-8
+      Host:
+      - www.slack.com
+      User-Agent:
+      - Python/3.8.5 slackclient/2.8.1 Linux/5.6.6-300.fc32.x86_64
+    method: POST
+    uri: https://www.slack.com/api/users.profile.set
+  response:
+    body:
+      string: '{"profile":{"title":"","phone":"","skype":"","real_name":"testname","real_name_normalized":"testname","display_name":"","display_name_normalized":"","fields":null,"status_text":"This
+        is a test!","status_emoji":":smile:","status_expiration":0,"avatar_hash":"g2e56aee3282","email":"test@example.com","image_24":"https:\/\/secure.gravatar.com\/avatar\/2e56aee32823013c2acea6102b3dd041.jpg?s=24&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-24.png","image_32":"https:\/\/secure.gravatar.com\/avatar\/2e56aee32823013c2acea6102b3dd041.jpg?s=32&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-32.png","image_48":"https:\/\/secure.gravatar.com\/avatar\/2e56aee32823013c2acea6102b3dd041.jpg?s=48&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-48.png","image_72":"https:\/\/secure.gravatar.com\/avatar\/2e56aee32823013c2acea6102b3dd041.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-72.png","image_192":"https:\/\/secure.gravatar.com\/avatar\/2e56aee32823013c2acea6102b3dd041.jpg?s=192&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-192.png","image_512":"https:\/\/secure.gravatar.com\/avatar\/2e56aee32823013c2acea6102b3dd041.jpg?s=512&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-512.png","status_text_canonical":""},"ok":true,"username":"testusername"}'
+    headers:
+      access-control-allow-headers:
+      - slack-route, x-slack-version-ts, x-b3-traceid, x-b3-spanid, x-b3-parentspanid,
+        x-b3-sampled, x-b3-flags
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - x-slack-req-id, retry-after
+      cache-control:
+      - private, no-cache, no-store, must-revalidate
+      connection:
+      - close
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 29 Aug 2020 22:14:14 GMT
+      expires:
+      - Mon, 26 Jul 1997 05:00:00 GMT
+      pragma:
+      - no-cache
+      referrer-policy:
+      - no-referrer
+      server:
+      - Apache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-accepted-oauth-scopes:
+      - users.profile:write
+      x-content-type-options:
+      - nosniff
+      x-oauth-scopes:
+      - identify,users:read,users.profile:write
+      x-slack-backend:
+      - r
+      x-slack-req-id:
+      - 7fe20b90a0e17e81b9a79eb4e04e95d2
+      x-via:
+      - haproxy-www-w9x0,haproxy-edge-lhr-ezl8
+      x-xss-protection:
+      - '0'
+    status:
+      code: 200
+      message: OK
+version: 1
