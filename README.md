@@ -1,7 +1,7 @@
 # slack-profile-update
 
 ## Purpose
-To sync current status accross workspaces in slack.
+To sync current status across workspaces in slack.
 
 For example:
 If you set a profile status in one workspace:
@@ -11,7 +11,7 @@ If you set a profile status in one workspace:
 What if that same status was set in your other slack workspaces too! :boom:
  
 ## Scope
-This is the current scope. In the future we may look to expand what is synced and to where 
+This is the current scope. In the future, we may look to expand what is synced and to where 
 
 
 # Testing
