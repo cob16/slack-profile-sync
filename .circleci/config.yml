@@ -1,19 +1,35 @@
 version: 2.1
 
-orbs:
-  poetry: frameio/poetry@0.15.0
+executors:
+  python:
+    description: CircleCI python image that includes poetry
+    docker:
+    - image: circleci/python:<<parameters.tag>>
+    environment:
+      POETRY_CACHE_DIR: /home/circleci/project/.poetry
+    parameters:
+      tag:
+        default: latest
+        type: string
 
-# jobs:
-#   build-and-test:
-#    executor: python/default
-#    steps:
-#      - checkout
+jobs:
+ test:
+  executor: python
+  steps:
+    - checkout
+    - restore_cache:
+        keys:
+          - 'deps-{{ checksum "poetry.lock" }}'
+    - poetry install
+    - save_cache:
+        key: 'deps-{{ checksum "poetry.lock" }}'
+        paths:
+          - /home/circleci/project/.poetry/virtualenvs
+    - run:
+        name: Poetry - install
+        command: poetry run pytest --block-network
 
 workflows:
   main:
     jobs:
-      - poetry/build
-      - poetry/shell:
-          args: pytest --block-network
-          requires:
-            - poetry/build
+      - test
