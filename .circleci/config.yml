@@ -4,7 +4,7 @@ executors:
   python:
     description: CircleCI python image that includes poetry
     docker:
-    - image: circleci/python:<<parameters.tag>>
+    - image: circleci/python:latest
     environment:
       POETRY_CACHE_DIR: /home/circleci/project/.poetry
     parameters:
