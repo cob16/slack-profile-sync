@@ -22,3 +22,12 @@ poetry install
 make test
 ```
 
+## Local Run (to receive events)
+```
+# in one terminal
+ngrok http 8080
+
+# and in another
+./tools/localserver.py 8080
+````
+
