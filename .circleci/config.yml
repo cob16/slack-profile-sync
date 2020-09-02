@@ -1,0 +1,19 @@
+version: 2.1
+
+orbs:
+  poetry: frameio/poetry@0.15.0
+
+# jobs:
+#   build-and-test:
+#    executor: python/default
+#    steps:
+#      - checkout
+
+workflows:
+  main:
+    jobs:
+      - poetry/build
+      - poetry/shell:
+          args: pytest --block-network
+          requires:
+            - poetry/build
