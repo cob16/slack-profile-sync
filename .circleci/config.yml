@@ -20,13 +20,15 @@ jobs:
     - restore_cache:
         keys:
           - 'deps-{{ checksum "poetry.lock" }}'
-    - poetry install
+    - run:
+        name: Poetry - install
+        command: poetry install
     - save_cache:
         key: 'deps-{{ checksum "poetry.lock" }}'
         paths:
           - /home/circleci/project/.poetry/virtualenvs
     - run:
-        name: Poetry - install
+        name: run tests
         command: poetry run pytest --block-network
 
 workflows:
