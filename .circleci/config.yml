@@ -1,0 +1,37 @@
+version: 2.1
+
+executors:
+  python:
+    description: CircleCI python image that includes poetry
+    docker:
+    - image: circleci/python:latest
+    environment:
+      POETRY_CACHE_DIR: /home/circleci/project/.poetry
+    parameters:
+      tag:
+        default: latest
+        type: string
+
+jobs:
+ test:
+  executor: python
+  steps:
+    - checkout
+    - restore_cache:
+        keys:
+          - 'deps-{{ checksum "poetry.lock" }}'
+    - run:
+        name: Poetry - install
+        command: poetry install
+    - save_cache:
+        key: 'deps-{{ checksum "poetry.lock" }}'
+        paths:
+          - /home/circleci/project/.poetry/virtualenvs
+    - run:
+        name: run tests
+        command: poetry run pytest --block-network
+
+workflows:
+  main:
+    jobs:
+      - test
