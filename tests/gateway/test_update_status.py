@@ -9,5 +9,5 @@ def test_can_call_update_status(slack_test_token):
         token=slack_test_token,
         status_text="This is a test!",
         status_emoji=":smile:",
-        status_expiration=0
+        status_expiration=0,
     )
