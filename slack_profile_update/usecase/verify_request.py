@@ -33,5 +33,6 @@ class VerifyRequest:
         )
 
         compare_digest_result = hmac.compare_digest(request_hash, signature)
-        logging.warning(f"VerifyRequest {compare_digest_result}")
+        if not compare_digest_result:
+            logging.warning(f"VerifyRequest returned {compare_digest_result}")
         return compare_digest_result

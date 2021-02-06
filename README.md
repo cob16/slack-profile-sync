@@ -30,5 +30,5 @@ make test
 ngrok http 8080
 
 # and in another
-./tools/localserver.py 8080
+SLACK_SIGNING_SECRET="<YOUR-SECRET>" poetry run ./tools/localserver.py 8080
 ```

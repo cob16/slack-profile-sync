@@ -9,10 +9,12 @@ Usage::
     ./server.py [<port>]
 
 """
-
+import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import logging
+
+from slack_profile_update.handle_event import HandleEvent
 
 
 class S(BaseHTTPRequestHandler):
@@ -33,15 +35,17 @@ class S(BaseHTTPRequestHandler):
             str(self.headers),
             post_data.decode("utf-8"),
         )
-        body = json.loads(post_data.decode("utf-8")).get("challenge", "None")
 
+        response = HandleEvent(
+            os.environ, self.headers, post_data.decode("utf-8")
+        ).execute()
         self._set_response()
-
-        self.wfile.write(body.encode("utf-8"))
+        print(f"returning {response}")
+        self.wfile.write(response.encode("utf-8"))
 
 
 def run(server_class=HTTPServer, handler_class=S, port=8080):
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
 
     server_address = ("", port)
     httpd = server_class(server_address, handler_class)
