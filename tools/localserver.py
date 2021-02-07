@@ -43,12 +43,13 @@ class S(BaseHTTPRequestHandler):
         self.handle_response(response)
 
     def api_gateway_proxy_event(self, post_data, http_method):
-        query_arguments = parse.parse_qs(
-            parse.urlparse(self.path).query, strict_parsing=True
-        )
+        querys = parse.urlparse(self.path).query
+        query_arguments = {}
+        if querys != "":
+            query_arguments = parse.parse_qs(querys, strict_parsing=True)
         return {
             "input": {
-                "path": self.path,
+                "path": parse.urlparse(self.path).path,
                 "requestContext": {
                     "httpMethod": http_method,
                 },
