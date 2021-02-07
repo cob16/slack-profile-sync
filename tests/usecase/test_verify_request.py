@@ -1,13 +1,21 @@
 import json
 from time import time
 
+from slack_sdk.signature import SignatureVerifier
+
 from slack_profile_update.handle_event import HandleEvent
 from slack_profile_update.presenter.api_gateway_response import ApiGatewayResponse
 from slack_profile_update.usecase.verify_request import VerifyRequest
-from tests.test_helpers import event_signature, event_signature_headers
+from tests.test_helpers import event_signature_headers
 
 signing_secret = "8f742231b10e8888abcd99yyyzzz85a5"
 raw_body = "some_body"
+
+
+def event_signature(signing_secret, timestamp, raw_body):
+    return SignatureVerifier(signing_secret=signing_secret).generate_signature(
+        timestamp=timestamp, body=raw_body
+    )
 
 
 def test_no_request_timestamp_header():
@@ -16,7 +24,7 @@ def test_no_request_timestamp_header():
             raw_body,
             headers={
                 "X-Slack-Signature": event_signature(
-                    signing_secret, int(time()), raw_body
+                    signing_secret, str(int(time())), raw_body
                 )
             },
         )
