@@ -19,7 +19,7 @@ class HandleEvent:
             self.raw_body, self.headers
         ):
             response.auth_error()
-            return response.present()
+            return response
 
         body = json.loads(self.raw_body)
 
@@ -40,4 +40,4 @@ class HandleEvent:
             logging.error("event not supported %s", body)
             response.ok()
 
-        return response.present()
+        return response

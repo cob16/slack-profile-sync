@@ -12,6 +12,10 @@ class ApiGatewayResponse:
         self.__headers = {}
         self.__body = None
 
+    def not_found(self):
+        self.__status_code = HTTPStatus.NOT_FOUND.value
+        return self
+
     def auth_error(self):
         self.__status_code = HTTPStatus.UNAUTHORIZED.value
         return self
@@ -20,8 +24,16 @@ class ApiGatewayResponse:
         if body is None:
             self.__status_code = HTTPStatus.NO_CONTENT.value
         else:
-            self.__body = body
+            self.__body = json.dumps(body)
             self.__status_code = HTTPStatus.OK.value
+            self.__headers["Content-Type"] = "application/json"
+
+        return self
+
+    def ok_html(self, body):
+        self.__body = body
+        self.__status_code = HTTPStatus.OK.value
+        self.__headers["Content-Type"] = "text/html"
 
         return self
 
@@ -37,5 +49,5 @@ class ApiGatewayResponse:
         return {
             "statusCode": self.__status_code,
             "headers": self.__headers,
-            "body": json.dumps(self.__body) if self.__body else None,
+            "body": self.__body,
         }

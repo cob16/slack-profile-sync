@@ -118,7 +118,7 @@ def test_invalid_request_is_blocked():
         raw_body=json.dumps({"this is a test": "foobar"}),
     ).execute()
 
-    assert response == ApiGatewayResponse().auth_error().present()
+    assert response.present() == ApiGatewayResponse().auth_error().present()
 
 
 def test_handle_url_verification_event(test_file):
@@ -134,4 +134,4 @@ def test_handle_url_verification_event(test_file):
     expected_body = {
         "challenge": "3eZbrw1aBm2rZgRNFdxV2595E9CY3gmdALWMmHkvFXO7tYXAYM8P"
     }
-    assert response == ApiGatewayResponse().ok(expected_body).present()
+    assert response.present() == ApiGatewayResponse().ok(expected_body).present()

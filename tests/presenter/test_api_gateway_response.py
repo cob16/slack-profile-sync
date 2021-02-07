@@ -18,6 +18,15 @@ class TestApiGatewayResponse(TestCase):
             "body": None,
         }
 
+    def test_not_found(self):
+        response = ApiGatewayResponse().not_found()
+
+        assert response.present() == {
+            "statusCode": 404,
+            "headers": {},
+            "body": None,
+        }
+
     def test_ok(self):
         response = ApiGatewayResponse().ok()
 
@@ -33,8 +42,18 @@ class TestApiGatewayResponse(TestCase):
 
         assert response.present() == {
             "statusCode": 200,
-            "headers": {},
+            "headers": {"Content-Type": "application/json"},
             "body": '{"test": "testing"}',
+        }
+
+    def test_ok_with_html_body(self):
+        body = "<html>"
+        response = ApiGatewayResponse().ok_html(body)
+
+        assert response.present() == {
+            "statusCode": 200,
+            "headers": {"Content-Type": "text/html"},
+            "body": body,
         }
 
     def test_redirect(self):

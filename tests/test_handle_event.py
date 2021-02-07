@@ -16,7 +16,7 @@ def test_execute_returns_ok_if_event_not_found_error():
     ).execute()
 
     # we do not want to error if the slack events api sends a event that is not supported
-    assert response == ApiGatewayResponse().ok().present()
+    assert response.present() == ApiGatewayResponse().ok().present()
 
 
 def test_execute_returns_ok_if_event_callback_not_found_error(caplog):
@@ -36,4 +36,4 @@ def test_execute_returns_ok_if_event_callback_not_found_error(caplog):
 
     assert f"unsupported event_callback" in caplog.text, "log does not exist"
     # we do not want to error if the slack events api sends a event that is not supported
-    assert response == ApiGatewayResponse().ok().present()
+    assert response.present() == ApiGatewayResponse().ok().present()

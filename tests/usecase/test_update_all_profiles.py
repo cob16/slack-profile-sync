@@ -17,7 +17,7 @@ def test_handle_user_change_event(test_file):
         raw_body=event,
     ).execute()
 
-    assert response == ApiGatewayResponse().ok().present()
+    assert response.present() == ApiGatewayResponse().ok().present()
 
 
 def test_logging_when_in_debug(caplog, test_file):

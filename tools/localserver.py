@@ -1,47 +1,75 @@
 #!/usr/bin/env python3
 
-"""
-
-Very simple HTTP server in python for logging requests
-
-Usage::
-
-    ./server.py [<port>]
-
-"""
 import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
-import json
+from urllib import parse
 import logging
 
-from slack_profile_update.handle_event import HandleEvent
+from slack_profile_update.handle_request import HandleRequest
 
 
 class S(BaseHTTPRequestHandler):
-    def _set_response(self):
-        self.send_response(200)
-        self.send_header("Content-type", "text/html")
-        self.end_headers()
+    def do_GET(self):
+        print(parse.urlparse(self.path).path)
+        if parse.urlparse(self.path).path != "/oauth/authorization_grant":
+            self.send_error(404)
+        else:
+            print(self.path)
+
+            response = HandleRequest().execute(
+                os.environ,
+                event=self.api_gateway_proxy_event(None, "GET"),
+            )
+            logging.debug(f"returning {response}")
+
+            self.handle_response(response)
 
     def do_POST(self):
         content_length = int(
             self.headers["Content-Length"]
         )  # <--- Gets the size of data
-        post_data = self.rfile.read(content_length)
+        post_data = self.rfile.read(content_length).decode("utf-8")
 
         logging.info(
             "POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
             str(self.path),
             str(self.headers),
-            post_data.decode("utf-8"),
+            post_data,
         )
 
-        response = HandleEvent(
-            os.environ, self.headers, post_data.decode("utf-8")
-        ).execute()
-        self._set_response()
-        print(f"returning {response}")
-        self.wfile.write(response.encode("utf-8"))
+        event = self.api_gateway_proxy_event(post_data, "POST")
+
+        response = HandleRequest().execute(os.environ, event)
+        self.handle_response(response)
+
+    def api_gateway_proxy_event(self, post_data, http_method):
+        query_arguments = parse.parse_qs(
+            parse.urlparse(self.path).query, strict_parsing=True
+        )
+        return {
+            "input": {
+                "path": self.path,
+                "requestContext": {
+                    "httpMethod": http_method,
+                },
+                "headers": self.headers,
+                "queryStringParameters": query_arguments,
+                "body": post_data,
+            },
+        }
+
+    def handle_response(self, response):
+        logging.debug(f"returning {response}")
+
+        self.send_response(response["statusCode"])
+        self.send_headers(response["headers"])
+        self.end_headers()
+        if response["body"] is not None:
+            self.wfile.write(response["body"].encode())
+
+    def send_headers(self, header_dict):
+        for key, value in header_dict.items():
+            self.send_header(key, value)
 
 
 def run(server_class=HTTPServer, handler_class=S, port=8080):
