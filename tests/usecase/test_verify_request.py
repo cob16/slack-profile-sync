@@ -2,6 +2,7 @@ import json
 from time import time
 
 from slack_profile_update.handle_event import HandleEvent
+from slack_profile_update.presenter.api_gateway_response import ApiGatewayResponse
 from slack_profile_update.usecase.verify_request import VerifyRequest
 from tests.test_helpers import event_signature, event_signature_headers
 
@@ -85,9 +86,7 @@ def test_verify_signature_fails():
     raw_body = "foobar"
     headers = {
         "X-Slack-Request-Timestamp": str(int(time())),
-        "X-Slack-Signature": event_signature(
-            "the wrong secret", int(time()), raw_body
-        ),
+        "X-Slack-Signature": event_signature("the wrong secret", int(time()), raw_body),
     }
 
     assert (
@@ -96,9 +95,7 @@ def test_verify_signature_fails():
 
     headers = {
         "X-Slack-Request-Timestamp": str(int(time())),
-        "X-Slack-Signature": event_signature(
-            signing_secret, int(time()), "wrong body"
-        ),
+        "X-Slack-Signature": event_signature(signing_secret, int(time()), "wrong body"),
     }
 
     assert (
@@ -113,7 +110,7 @@ def test_invalid_request_is_blocked():
         raw_body=json.dumps({"this is a test": "foobar"}),
     ).execute()
 
-    assert response == "{}"
+    assert response == ApiGatewayResponse().auth_error().present()
 
 
 def test_handle_url_verification_event(test_file):
@@ -126,7 +123,7 @@ def test_handle_url_verification_event(test_file):
         raw_body=event,
     ).execute()
 
-    assert (
-        response
-        == '{"challenge": "3eZbrw1aBm2rZgRNFdxV2595E9CY3gmdALWMmHkvFXO7tYXAYM8P"}'
-    )
+    expected_body = {
+        "challenge": "3eZbrw1aBm2rZgRNFdxV2595E9CY3gmdALWMmHkvFXO7tYXAYM8P"
+    }
+    assert response == ApiGatewayResponse().ok(expected_body).present()

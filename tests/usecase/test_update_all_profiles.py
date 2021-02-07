@@ -2,6 +2,7 @@ import json
 import logging
 
 from slack_profile_update.handle_event import HandleEvent
+from slack_profile_update.presenter.api_gateway_response import ApiGatewayResponse
 from slack_profile_update.usecase.update_all_profiles import UpdateAllProfiles
 from tests.test_helpers import event_signature_headers
 
@@ -16,7 +17,7 @@ def test_handle_user_change_event(test_file):
         raw_body=event,
     ).execute()
 
-    assert response == ""
+    assert response == ApiGatewayResponse().ok().present()
 
 
 def test_logging_when_in_debug(caplog, test_file):
