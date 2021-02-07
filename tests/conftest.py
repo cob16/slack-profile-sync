@@ -11,7 +11,7 @@ def vcr_config():
 
 @pytest.fixture(scope="session")
 def slack_test_token(pytestconfig):
-    if pytestconfig.getoption("record_mode") is "none":
+    if pytestconfig.getoption("record_mode") == "none":
         return "fake_api_token"
     else:
         token = os.environ.get("SLACK_API_TOKEN", None)
