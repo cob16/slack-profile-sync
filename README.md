@@ -25,10 +25,12 @@ poetry install
 make test
 ```
 
-## Local Run (to receive events)
+## Local Run
+This codebase is designed to be run inside a lambda but can also be run locally for testing
 
 ```# in one terminal
 ngrok http 8080
+# add the https url returned to your slack app settings page  
 
 # and in another
 SLACK_SIGNING_SECRET="<YOUR-SECRET>" poetry run ./tools/localserver.py 8080
