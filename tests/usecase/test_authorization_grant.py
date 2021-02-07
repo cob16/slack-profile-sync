@@ -14,8 +14,8 @@ def test_authorization_grant(caplog):
                 http_method="GET",
                 path="/oauth/authorization_grant",
                 query_arguments={
-                    "code": "foobar",
-                    "state": "test-state",
+                    "code": ["foobar"],
+                    "state": ["test-state"],
                 },
             ),
         )
@@ -36,7 +36,7 @@ def test_authorization_grant_missing_code(caplog):
                 http_method="GET",
                 path="/oauth/authorization_grant",
                 query_arguments={
-                    "state": "test-state",
+                    "state": ["test-state"],
                 },
             ),
         )
@@ -56,7 +56,7 @@ def test_authorization_grant_missing_sate(caplog):
                 headers=None,
                 http_method="GET",
                 path="/oauth/authorization_grant",
-                query_arguments={"code": "foobar"},
+                query_arguments={"code": ["foobar"]},
             ),
         )
 

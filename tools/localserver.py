@@ -54,7 +54,7 @@ class S(BaseHTTPRequestHandler):
                     "httpMethod": http_method,
                 },
                 "headers": self.headers,
-                "queryStringParameters": query_arguments,
+                "multiValueQueryStringParameters": query_arguments,
                 "body": post_data,
             },
         }

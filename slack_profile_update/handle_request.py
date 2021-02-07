@@ -11,10 +11,16 @@ class HandleRequest:
         response = ApiGatewayResponse()
         if http_method == "GET":
             if path == "/oauth/authorization_grant":
-                code = event["input"]["queryStringParameters"].get("code", None)
-                state = event["input"]["queryStringParameters"].get("state", None)
-                if code is not None and state is not None:
-                    body = AuthorizationGrant().execute(code, state)
+                query_strings = event["input"]["multiValueQueryStringParameters"]
+                code = query_strings.get("code", None)
+                state = query_strings.get("state", None)
+                if (
+                    code is not None
+                    and state is not None
+                    and len(code) == 1
+                    and len(state) == 1
+                ):
+                    body = AuthorizationGrant().execute(code[0], state[0])
                     response.ok_html(body)
                 else:
                     response.not_found()

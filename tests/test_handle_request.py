@@ -41,7 +41,7 @@ def example_request(
                 "httpMethod": http_method,
             },
             "headers": headers,
-            "queryStringParameters": query_arguments,
+            "multiValueQueryStringParameters": query_arguments,
             "body": body,
         },
     }
