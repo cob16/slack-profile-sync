@@ -1,7 +1,7 @@
 from slack_profile_update.handle_event import HandleEvent
 from slack_profile_update.presenter.api_gateway_request import ApiGatewayRequest
 from slack_profile_update.presenter.api_gateway_response import ApiGatewayResponse
-from slack_profile_update.usecase.authorization_grant import AuthorizationGrant
+from slack_profile_update.usecase.user_install import UserInstall
 
 
 class HandleRequest:
@@ -20,7 +20,7 @@ class HandleRequest:
                     and len(code) == 1
                     and len(state) == 1
                 ):
-                    body = AuthorizationGrant().execute(code[0], state[0])
+                    body = UserInstall().execute(code[0], state[0])
                     response.ok_html(body)
                 else:
                     response.not_found()

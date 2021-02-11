@@ -4,7 +4,7 @@ from slack_profile_update.handle_request import HandleRequest
 from tests.test_handle_request import example_request
 
 
-def test_authorization_grant(caplog):
+def test_user_install(caplog):
     secret = "is_secret"
     with caplog.at_level(logging.DEBUG):
         response = HandleRequest().execute(
@@ -26,7 +26,7 @@ def test_authorization_grant(caplog):
     assert "received authorization_grant code" in caplog.text, "missing log entry"
 
 
-def test_authorization_grant_missing_code(caplog):
+def test_user_install_missing_code(caplog):
     secret = "is_secret"
     with caplog.at_level(logging.DEBUG):
         response = HandleRequest().execute(
@@ -47,7 +47,7 @@ def test_authorization_grant_missing_code(caplog):
     assert caplog.text == ""
 
 
-def test_authorization_grant_missing_sate(caplog):
+def test_user_install_missing_sate(caplog):
     secret = "is_secret"
     with caplog.at_level(logging.DEBUG):
         response = HandleRequest().execute(

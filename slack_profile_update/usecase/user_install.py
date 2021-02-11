@@ -3,7 +3,7 @@ import logging
 from slack_sdk.oauth import RedirectUriPageRenderer
 
 
-class AuthorizationGrant:
+class UserInstall:
     def execute(self, code, state):
         logging.debug(
             "received authorization_grant code '%s'",
