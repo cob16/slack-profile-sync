@@ -20,8 +20,10 @@ class HandleRequest:
                     and len(code) == 1
                     and len(state) == 1
                 ):
-                    body = UserInstall().execute(code[0], state[0])
-                    response.ok_html(body)
+                    response = UserInstall(
+                        client_id=environment["CLIENT_ID"],
+                        client_secret=environment["CLIENT_SECRET"],
+                    ).execute(code[0], state[0])
                 else:
                     response.not_found()
             else:

@@ -1,0 +1,67 @@
+interactions:
+- request:
+    body: code=code
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '9'
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Host:
+      - www.slack.com
+      User-Agent:
+      - Python/3.9.1 slackclient/3.3.2 Linux/5.10.12-200.fc33.x86_64
+    method: POST
+    uri: https://www.slack.com/api/oauth.v2.access
+  response:
+    body:
+      string: '{"ok":false,"error":"invalid_code"}'
+    headers:
+      access-control-allow-headers:
+      - slack-route, x-slack-version-ts, x-b3-traceid, x-b3-spanid, x-b3-parentspanid,
+        x-b3-sampled, x-b3-flags
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - x-slack-req-id, retry-after
+      connection:
+      - close
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 12 Feb 2021 18:25:28 GMT
+      referrer-policy:
+      - no-referrer
+      server:
+      - Apache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      via:
+      - envoy-www-iad-lmdg
+      x-backend:
+      - main_normal main_canary_with_overflow main_control_with_overflow
+      x-content-type-options:
+      - nosniff
+      x-envoy-upstream-service-time:
+      - '5'
+      x-server:
+      - slack-www-hhvm-main-iad-er72
+      x-slack-backend:
+      - r
+      x-slack-req-id:
+      - e6d8b24fb322eaf64c765ee2462411bb
+      x-slack-shared-secret-outcome:
+      - shared-secret
+      x-via:
+      - envoy-www-iad-lmdg, haproxy-edge-lhr-sg8t
+      x-xss-protection:
+      - '0'
+    status:
+      code: 200
+      message: OK
+version: 1
