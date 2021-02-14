@@ -1,3 +1,4 @@
+from slack_profile_update.gateway.stub_user_token_store import StubUserTokenStore
 from slack_profile_update.handle_event import HandleEvent
 from slack_profile_update.presenter.api_gateway_request import ApiGatewayRequest
 from slack_profile_update.presenter.api_gateway_response import ApiGatewayResponse
@@ -23,6 +24,7 @@ class HandleRequest:
                     response = UserInstall(
                         client_id=environment["CLIENT_ID"],
                         client_secret=environment["CLIENT_SECRET"],
+                        user_token_store=StubUserTokenStore(),
                     ).execute(code[0], state[0])
                 else:
                     response.not_found()
