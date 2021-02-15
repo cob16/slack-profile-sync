@@ -1,12 +1,15 @@
 import logging
 
+from slack_profile_update.domain.user import User
+from slack_profile_update.gateway import slack
+
 
 class UpdateAllProfiles:
-    def __init__(self, update_event):
-        self.update_event = update_event
+    def __init__(self, user_link_store):
+        self.user_link_store = user_link_store
 
-    def execute(self):
-        event = UpdateEventReader(self.update_event)
+    def execute(self, update_event):
+        event = UpdateEventReader(update_event)
         logging.debug(
             "update event of user: '%s' USERID: '%s' TEAMID: '%s'"
             " to status text: '%s' emoji '%s' expiration: '%s'",
@@ -17,6 +20,17 @@ class UpdateAllProfiles:
             event.status_emoji,
             event.status_expiration,
         )
+        try:
+            user_list = self.user_link_store.fetch(User(event.user_id, event.team_id))
+            for user in user_list:
+                slack.update_status(
+                    token=user.token,
+                    status_text=event.status_text,
+                    status_emoji=event.status_emoji,
+                    status_expiration=event.status_expiration,
+                )
+        except KeyError:
+            pass
 
 
 class UpdateEventReader:

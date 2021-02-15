@@ -1,7 +1,7 @@
 import logging
 
 from slack_profile_update.gateway import slack
-from slack_profile_update.gateway.slack import UserToken
+from slack_profile_update.gateway.slack import AuthorisationGrantResponse
 from slack_profile_update.gateway.stub_user_token_store import StubUserTokenStore
 from slack_profile_update.handle_request import HandleRequest
 from slack_profile_update.usecase.user_install import UserInstall
@@ -11,7 +11,9 @@ from tests.test_handle_request import example_request
 def test_user_install_stores_token_if_success(mocker):
     mocker.patch(
         "slack_profile_update.gateway.slack.authorisation_grant",
-        return_value=UserToken(True, "foo-team", "foo-user", "foo-token"),
+        return_value=AuthorisationGrantResponse(
+            True, "foo-team", "foo-user", "foo-token"
+        ),
     )
     client_id = "test client id"
     client_secret = "test client secret"
@@ -30,7 +32,9 @@ def test_user_install_stores_token_if_success(mocker):
 def test_user_install(caplog, mocker):
     mocker.patch(
         "slack_profile_update.gateway.slack.authorisation_grant",
-        return_value=UserToken(True, "foo-team", "foo-user", "foo-token"),
+        return_value=AuthorisationGrantResponse(
+            True, "foo-team", "foo-user", "foo-token"
+        ),
     )
     client_id = "test client id"
     client_secret = "test client secret"
@@ -116,7 +120,7 @@ def test_user_install_missing_sate(caplog):
 def test_user_install_returns_failure(caplog, mocker):
     mocker.patch(
         "slack_profile_update.gateway.slack.authorisation_grant",
-        return_value=UserToken(success=False),
+        return_value=AuthorisationGrantResponse(success=False),
     )
     slack_signing_secret = "is_secret"
     client_id = "test client id"

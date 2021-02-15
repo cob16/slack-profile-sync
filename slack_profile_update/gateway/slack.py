@@ -19,7 +19,7 @@ def update_status(
     client.users_profile_set(**payload)
 
 
-class UserToken:
+class AuthorisationGrantResponse:
     def __init__(self, success: bool, team=None, user=None, token=None):
         self.success = success
         self.team = team
@@ -40,9 +40,9 @@ def authorisation_grant(client_id, client_secret, code, redirect_uri):
     except SlackApiError as e:
         logging.warning(e)
         logging.warning("returning success=False")
-        return UserToken(success=False)
+        return AuthorisationGrantResponse(success=False)
 
-    return UserToken(
+    return AuthorisationGrantResponse(
         success=True,
         team=response.data["team"]["id"],
         user=response.data["authed_user"]["id"],

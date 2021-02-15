@@ -1,6 +1,9 @@
 import json
 import logging
 
+from slack_profile_update.domain.user import User
+from slack_profile_update.gateway import slack
+from slack_profile_update.gateway.stub_user_link_store import StubUserLinkStore
 from slack_profile_update.handle_event import HandleEvent
 from slack_profile_update.presenter.api_gateway_response import ApiGatewayResponse
 from slack_profile_update.usecase.update_all_profiles import UpdateAllProfiles
@@ -38,10 +41,24 @@ def test_logging_when_in_debug(caplog, test_file):
     ), "missing log entry"
 
 
-def test_no_logging_when_not_in_debug(caplog, test_file):
+def test_updates_status_of_linked_users(caplog, test_file, mocker):
+    mocker.patch(
+        "slack_profile_update.gateway.slack.update_status",
+        return_value=True,
+    )
     event = json.loads(test_file("example_user_updated_event.json"))
 
-    with caplog.at_level(logging.INFO):
-        UpdateAllProfiles(event).execute()
+    source_user = User("U019LN451HT", "T019PQN3UAE", "token1")
+    dest_user = User("user1", "team1", "token2")
 
-    assert caplog.text == "", "logs exist when they should not"
+    user_link_store = StubUserLinkStore()
+    user_link_store.link(source_user, dest_user)
+
+    UpdateAllProfiles(user_link_store=user_link_store).execute(event)
+
+    slack.update_status.assert_called_once_with(
+        status_emoji=":smile:",
+        status_expiration=0,
+        status_text="This is a test!",
+        token=dest_user.token,
+    )

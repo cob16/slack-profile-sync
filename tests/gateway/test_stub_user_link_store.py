@@ -1,5 +1,6 @@
 import pytest
 
+from slack_profile_update.domain.user import User
 from slack_profile_update.gateway.stub_user_link_store import StubUserLinkStore
 
 
@@ -66,6 +67,33 @@ def test_links_across_different_source_users():
     user2 = "user2"
     user3 = "user3"
     user4 = "user4"
+    gateway.link(user1, user2)
+    gateway.link(user2, user3)
+    gateway.link(user3, user4)
+
+    assert gateway.fetch(user1) == {user2, user3, user4}
+    assert gateway.fetch(user2) == {user1, user3, user4}
+    assert gateway.fetch(user3) == {user1, user2, user4}
+    assert gateway.fetch(user4) == {user1, user2, user3}
+
+
+def test_handles_duplicates_calls():
+    gateway = StubUserLinkStore()
+    user1 = "user1"
+    user2 = "user2"
+    gateway.link(user1, user2)
+    gateway.link(user1, user2)
+
+    assert gateway.fetch(user1) == {user2}
+    assert gateway.fetch(user2) == {user1}
+
+
+def test_links_with_user_object():
+    gateway = StubUserLinkStore()
+    user1 = User("user1", "team1")
+    user2 = User("user2", "team2")
+    user3 = User("user3", "team3")
+    user4 = User("user4", "team4")
     gateway.link(user1, user2)
     gateway.link(user2, user3)
     gateway.link(user3, user4)
