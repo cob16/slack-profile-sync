@@ -21,11 +21,12 @@ def update_status(
 
 
 class AuthorisationGrantResponse:
-    def __init__(self, success: bool, team=None, user=None, token=None):
+    def __init__(self, success: bool, team=None, user=None, token=None, scope=None):
         self.success = success
         self.team = team
         self.user = user
         self.token = token
+        self.scope = scope
 
 
 def authorisation_grant(client_id, client_secret, code, redirect_uri):
@@ -48,4 +49,5 @@ def authorisation_grant(client_id, client_secret, code, redirect_uri):
         team=response.data["team"]["id"],
         user=response.data["authed_user"]["id"],
         token=response.data["authed_user"]["access_token"],
+        scope=response.data["authed_user"]["scope"],
     )

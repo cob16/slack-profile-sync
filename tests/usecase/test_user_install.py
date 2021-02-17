@@ -5,7 +5,7 @@ from slack_profile_update.gateway import slack
 from slack_profile_update.gateway.slack import AuthorisationGrantResponse
 from slack_profile_update.gateway.stub_user_token_store import StubUserTokenStore
 from slack_profile_update.handle_request import HandleRequest
-from slack_profile_update.usecase.user_install import UserInstall
+from slack_profile_update.usecase.user_install import UserInstall, EXPECTED_SCOPE
 from tests.test_handle_request import example_request
 
 
@@ -18,6 +18,7 @@ def test_user_install_stores_token_if_success(mocker):
             team=expected_user.team_id,
             user=expected_user.user_id,
             token="foo-token",
+            scope=EXPECTED_SCOPE
         ),
     )
     client_id = "test client id"
@@ -35,11 +36,36 @@ def test_user_install_stores_token_if_success(mocker):
     assert stub_user_token_store.fetch(expected_user).token == "foo-token"
 
 
+def test_user_install_fails_if_scope_is_incorrect(mocker):
+    expected_user = User(team_id="foo-team", user_id="foo-user")
+    mocker.patch(
+        "slack_profile_update.gateway.slack.authorisation_grant",
+        return_value=AuthorisationGrantResponse(
+            success=True,
+            team=expected_user.team_id,
+            user=expected_user.user_id,
+            token="foo-token",
+            scope="INCORRECT_SCOPE!!!"
+        ),
+    )
+    client_id = "test client id"
+    client_secret = "test client secret"
+    stub_user_token_store = StubUserTokenStore()
+    user_install = UserInstall(
+        client_id=client_id,
+        client_secret=client_secret,
+        redirect_uri="example.com",
+        user_token_store=stub_user_token_store,
+    )
+    response = user_install.execute("foobar", "test-state")
+    assert response.present()["statusCode"] == 401
+
+
 def test_user_install(caplog, mocker):
     mocker.patch(
         "slack_profile_update.gateway.slack.authorisation_grant",
         return_value=AuthorisationGrantResponse(
-            True, "foo-team", "foo-user", "foo-token"
+            True, "foo-team", "foo-user", "foo-token", EXPECTED_SCOPE
         ),
     )
     client_id = "test client id"
@@ -164,5 +190,5 @@ def test_user_install_returns_failure(caplog, mocker):
     assert response["body"] is None
 
     assert (
-        "returning auth error due to gateway failure" in caplog.text
+            "returning auth error due to gateway failure" in caplog.text
     ), "missing log entry"

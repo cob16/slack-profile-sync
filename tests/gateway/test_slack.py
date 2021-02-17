@@ -22,7 +22,7 @@ def test_authorisation_grant_when_code_invalid(caplog):
             client_id="foo", client_secret="bar", code="invalid-code", redirect_uri=None
         )
 
-    assert response.success == False
+    assert response.success is False
     assert "returning success=False" in caplog.text, "missing log entry"
     assert "The server responded with: {'ok': False" in caplog.text, "missing log entry"
 
@@ -40,3 +40,4 @@ def test_authorisation_grant_on_success():
     assert response.team == "T019PQN3UAE"
     assert response.user == "U019LN451HT"
     assert response.token == "xoxp-123"
+    assert response.scope == "users:read,users.profile:write"
