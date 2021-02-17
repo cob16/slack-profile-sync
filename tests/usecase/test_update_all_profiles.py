@@ -1,9 +1,11 @@
 import json
 import logging
+from unittest.mock import call
 
 from slack_profile_update.domain.user import User
 from slack_profile_update.gateway import slack
 from slack_profile_update.gateway.stub_user_link_store import StubUserLinkStore
+from slack_profile_update.gateway.stub_user_token_store import StubUserTokenStore
 from slack_profile_update.handle_event import HandleEvent
 from slack_profile_update.presenter.api_gateway_response import ApiGatewayResponse
 from slack_profile_update.usecase.update_all_profiles import UpdateAllProfiles
@@ -49,16 +51,35 @@ def test_updates_status_of_linked_users(caplog, test_file, mocker):
     event = json.loads(test_file("example_user_updated_event.json"))
 
     source_user = User("U019LN451HT", "T019PQN3UAE", "token1")
-    dest_user = User("user1", "team1", "token2")
+    dest_user_1 = User("user1", "team1", "token2")
+    dest_user_2 = User("user3", "team3", "token3")
 
-    user_link_store = StubUserLinkStore()
-    user_link_store.link(source_user, dest_user)
+    link_store = StubUserLinkStore()
+    link_store.link(source_user, dest_user_1)
+    link_store.link(source_user, dest_user_2)
 
-    UpdateAllProfiles(user_link_store=user_link_store).execute(event)
+    token_store = StubUserTokenStore()
+    token_store.store(dest_user_1)
+    token_store.store(dest_user_2)
 
-    slack.update_status.assert_called_once_with(
-        status_emoji=":smile:",
-        status_expiration=0,
-        status_text="This is a test!",
-        token=dest_user.token,
+    UpdateAllProfiles(user_link_store=link_store, user_token_store=token_store).execute(
+        event
+    )
+
+    slack.update_status.assert_has_calls(
+        [
+            call(
+                status_emoji=":smile:",
+                status_expiration=0,
+                status_text="This is a test!",
+                token=dest_user_1.token,
+            ),
+            call(
+                status_emoji=":smile:",
+                status_expiration=0,
+                status_text="This is a test!",
+                token=dest_user_2.token,
+            ),
+        ],
+        any_order=True,
     )

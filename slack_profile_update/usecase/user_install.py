@@ -2,6 +2,7 @@ import logging
 
 from slack_sdk.oauth import RedirectUriPageRenderer
 
+from slack_profile_update.domain.user import User
 from slack_profile_update.gateway import slack
 from slack_profile_update.presenter.api_gateway_response import ApiGatewayResponse
 
@@ -32,9 +33,12 @@ class UserInstall:
             body = RedirectUriPageRenderer(
                 install_path="", redirect_uri_path=""
             ).render_success_page(app_id="fakeappid", team_id=None)
-            self.__user_token_store.store(
-                gateway_response.team, gateway_response.user, gateway_response.token
+            user = User(
+                team_id=gateway_response.team,
+                user_id=gateway_response.user,
+                token=gateway_response.token,
             )
+            self.__user_token_store.store(user)
             return response.ok_html(body)
         else:
             logging.warning("returning auth error due to gateway failure")

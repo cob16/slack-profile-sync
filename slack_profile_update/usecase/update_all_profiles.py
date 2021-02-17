@@ -2,11 +2,13 @@ import logging
 
 from slack_profile_update.domain.user import User
 from slack_profile_update.gateway import slack
+from slack_profile_update.gateway.stub_user_token_store import StubUserTokenStore
 
 
 class UpdateAllProfiles:
-    def __init__(self, user_link_store):
+    def __init__(self, user_link_store, user_token_store):
         self.user_link_store = user_link_store
+        self.user_token_store = user_token_store
 
     def execute(self, update_event):
         event = UpdateEventReader(update_event)
@@ -23,8 +25,9 @@ class UpdateAllProfiles:
         try:
             user_list = self.user_link_store.fetch(User(event.user_id, event.team_id))
             for user in user_list:
+                user_with_token = self.user_token_store.fetch(user)
                 slack.update_status(
-                    token=user.token,
+                    token=user_with_token.token,
                     status_text=event.status_text,
                     status_emoji=event.status_emoji,
                     status_expiration=event.status_expiration,

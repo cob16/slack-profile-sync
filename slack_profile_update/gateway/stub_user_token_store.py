@@ -1,14 +1,17 @@
 import logging
 
+from slack_profile_update.domain.user import User
+
 
 class StubUserTokenStore:
     def __init__(self):
         self.user_tokens = {}
 
-    def store(self, team_id, user_id, token):
-        token_key = f"{team_id}-|-{user_id}"
+    def store(self, user):
+        token_key = f"{user.team_id}-|-{user.user_id}"
         logging.debug("stored new token with key %s", token_key)
-        self.user_tokens[token_key] = token
+        self.user_tokens[token_key] = user.token
 
-    def fetch(self, team_id, user_id):
-        return self.user_tokens[f"{team_id}-|-{user_id}"]
+    def fetch(self, user):
+        token = self.user_tokens[f"{user.team_id}-|-{user.user_id}"]
+        return User(user_id=user.user_id, team_id=user.team_id, token=token)

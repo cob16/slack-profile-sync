@@ -1,5 +1,6 @@
 import logging
 
+from slack_profile_update.domain.user import User
 from slack_profile_update.gateway import slack
 from slack_profile_update.gateway.slack import AuthorisationGrantResponse
 from slack_profile_update.gateway.stub_user_token_store import StubUserTokenStore
@@ -9,10 +10,14 @@ from tests.test_handle_request import example_request
 
 
 def test_user_install_stores_token_if_success(mocker):
+    expected_user = User(team_id="foo-team", user_id="foo-user")
     mocker.patch(
         "slack_profile_update.gateway.slack.authorisation_grant",
         return_value=AuthorisationGrantResponse(
-            True, "foo-team", "foo-user", "foo-token"
+            success=True,
+            team=expected_user.team_id,
+            user=expected_user.user_id,
+            token="foo-token",
         ),
     )
     client_id = "test client id"
@@ -26,7 +31,7 @@ def test_user_install_stores_token_if_success(mocker):
     response = user_install.execute("foobar", "test-state")
     assert response.present()["statusCode"] == 200
 
-    assert stub_user_token_store.fetch("foo-team", "foo-user") == "foo-token"
+    assert stub_user_token_store.fetch(expected_user).token == "foo-token"
 
 
 def test_user_install(caplog, mocker):

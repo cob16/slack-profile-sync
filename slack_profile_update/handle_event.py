@@ -2,6 +2,7 @@ import json
 import logging
 
 from slack_profile_update.gateway.stub_user_link_store import StubUserLinkStore
+from slack_profile_update.gateway.stub_user_token_store import StubUserTokenStore
 from slack_profile_update.presenter.api_gateway_response import ApiGatewayResponse
 from slack_profile_update.usecase.update_all_profiles import UpdateAllProfiles
 from slack_profile_update.usecase.url_verification import UrlVerification
@@ -32,7 +33,10 @@ class HandleEvent:
             event = body["event"]
             logging.info(f"received event {event['type']}")
             if event["type"] == "user_change":
-                UpdateAllProfiles(user_link_store=StubUserLinkStore()).execute(body)
+                UpdateAllProfiles(
+                    user_link_store=StubUserLinkStore(),
+                    user_token_store=StubUserTokenStore(),
+                ).execute(body)
                 response.ok()
             else:
                 logging.error("unsupported event_callback %s", event)
