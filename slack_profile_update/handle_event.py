@@ -33,9 +33,11 @@ class HandleEvent:
             event = body["event"]
             logging.info(f"received event {event['type']}")
             if event["type"] == "user_change":
+                link_store = StubUserLinkStore()
+                token_store = StubUserTokenStore()
                 UpdateAllProfiles(
-                    user_link_store=StubUserLinkStore(),
-                    user_token_store=StubUserTokenStore(),
+                    user_link_store=link_store,
+                    user_token_store=token_store,
                 ).execute(body)
                 response.ok()
             else:

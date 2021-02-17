@@ -9,7 +9,9 @@ class StubUserTokenStore:
 
     def store(self, user):
         token_key = f"{user.team_id}-|-{user.user_id}"
-        logging.debug("stored new token with key %s", token_key)
+        logging.debug(
+            f"stored team: '{user.team_id}' user: '{user.user_id}' new token with key '{user.token}'"
+        )
         self.user_tokens[token_key] = user.token
 
     def fetch(self, user):

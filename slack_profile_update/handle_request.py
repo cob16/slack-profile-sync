@@ -1,3 +1,5 @@
+import logging
+
 from slack_profile_update.gateway.stub_user_token_store import StubUserTokenStore
 from slack_profile_update.handle_event import HandleEvent
 from slack_profile_update.presenter.api_gateway_request import ApiGatewayRequest
@@ -27,6 +29,7 @@ class HandleRequest:
                         user_token_store=StubUserTokenStore(),
                     ).execute(code[0], state[0])
                 else:
+                    logging.debug("missing code or state")
                     response.not_found()
             else:
                 response.not_found()

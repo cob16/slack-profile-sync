@@ -7,6 +7,7 @@ from slack_sdk.errors import SlackApiError
 def update_status(
     token: str, status_text: str, status_emoji: str, status_expiration: int
 ):
+    logging.debug("sending status update")
     client = WebClient(token=token)
 
     payload = dict(
