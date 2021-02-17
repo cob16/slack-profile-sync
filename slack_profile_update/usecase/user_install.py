@@ -8,10 +8,11 @@ from slack_profile_update.presenter.api_gateway_response import ApiGatewayRespon
 
 
 class UserInstall:
-    def __init__(self, client_id, client_secret, user_token_store):
+    def __init__(self, client_id, client_secret, redirect_uri, user_token_store):
+        self.__client_id = client_id
+        self.__client_secret = client_secret
+        self.__redirect_uri = redirect_uri
         self.__user_token_store = user_token_store
-        self.client_id = client_id
-        self.client_secret = client_secret
 
     def execute(self, code, state):
         logging.debug(
@@ -23,10 +24,10 @@ class UserInstall:
             state,
         )
         gateway_response = slack.authorisation_grant(
-            client_id=self.client_id,
-            client_secret=self.client_secret,
+            client_id=self.__client_id,
+            client_secret=self.__client_secret,
             code=code,
-            redirect_uri="example.com",
+            redirect_uri=self.__redirect_uri,
         )
         response = ApiGatewayResponse()
         if gateway_response.success:

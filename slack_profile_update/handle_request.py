@@ -26,6 +26,7 @@ class HandleRequest:
                     response = UserInstall(
                         client_id=environment["CLIENT_ID"],
                         client_secret=environment["CLIENT_SECRET"],
+                        redirect_uri=environment["REDIRECT_URI"],
                         user_token_store=StubUserTokenStore(),
                     ).execute(code[0], state[0])
                 else:

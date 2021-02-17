@@ -26,6 +26,7 @@ def test_user_install_stores_token_if_success(mocker):
     user_install = UserInstall(
         client_id=client_id,
         client_secret=client_secret,
+        redirect_uri="example.com",
         user_token_store=stub_user_token_store,
     )
     response = user_install.execute("foobar", "test-state")
@@ -49,6 +50,7 @@ def test_user_install(caplog, mocker):
                 "SLACK_SIGNING_SECRET": "is_secret",
                 "CLIENT_ID": client_id,
                 "CLIENT_SECRET": client_secret,
+                "REDIRECT_URI": "example.com",
             },
             example_request(
                 headers=None,
@@ -96,7 +98,7 @@ def test_user_install_missing_code(caplog):
     assert response["statusCode"] == 404
     assert response["body"] is None
 
-    assert caplog.text == ""
+    assert "missing code or state" in caplog.text
 
 
 def test_user_install_missing_sate(caplog):
@@ -107,6 +109,7 @@ def test_user_install_missing_sate(caplog):
                 "SLACK_SIGNING_SECRET": secret,
                 "CLIENT_ID": "bar",
                 "CLIENT_SECRET": "foo",
+                "REDIRECT_URI": "example.com",
             },
             example_request(
                 headers=None,
@@ -119,7 +122,7 @@ def test_user_install_missing_sate(caplog):
     assert response["statusCode"] == 404
     assert response["body"] is None
 
-    assert caplog.text == ""
+    assert "missing code or state" in caplog.text
 
 
 def test_user_install_returns_failure(caplog, mocker):
@@ -130,12 +133,14 @@ def test_user_install_returns_failure(caplog, mocker):
     slack_signing_secret = "is_secret"
     client_id = "test client id"
     client_secret = "test client secret"
+    redirect_uri = "test-redirect-url.com"
     with caplog.at_level(logging.DEBUG):
         response = HandleRequest().execute(
             {
                 "SLACK_SIGNING_SECRET": slack_signing_secret,
                 "CLIENT_ID": client_id,
                 "CLIENT_SECRET": client_secret,
+                "REDIRECT_URI": redirect_uri,
             },
             example_request(
                 headers=None,
@@ -152,7 +157,7 @@ def test_user_install_returns_failure(caplog, mocker):
         client_id=client_id,
         client_secret=client_secret,
         code="foobar",
-        redirect_uri="example.com",
+        redirect_uri=redirect_uri,
     )
 
     assert response["statusCode"] == 401
