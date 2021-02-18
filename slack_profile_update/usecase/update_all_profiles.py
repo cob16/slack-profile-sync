@@ -2,7 +2,6 @@ import logging
 
 from slack_profile_update.domain.user import User
 from slack_profile_update.gateway import slack
-from slack_profile_update.gateway.stub_user_token_store import StubUserTokenStore
 
 
 class UpdateAllProfiles:

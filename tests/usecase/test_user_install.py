@@ -18,7 +18,7 @@ def test_user_install_stores_token_if_success(mocker):
             team=expected_user.team_id,
             user=expected_user.user_id,
             token="foo-token",
-            scope=EXPECTED_SCOPE
+            scope=EXPECTED_SCOPE,
         ),
     )
     client_id = "test client id"
@@ -45,7 +45,7 @@ def test_user_install_fails_if_scope_is_incorrect(mocker):
             team=expected_user.team_id,
             user=expected_user.user_id,
             token="foo-token",
-            scope="INCORRECT_SCOPE!!!"
+            scope="INCORRECT_SCOPE!!!",
         ),
     )
     client_id = "test client id"
@@ -190,5 +190,5 @@ def test_user_install_returns_failure(caplog, mocker):
     assert response["body"] is None
 
     assert (
-            "returning auth error due to gateway failure" in caplog.text
+        "returning auth error due to gateway failure" in caplog.text
     ), "missing log entry"

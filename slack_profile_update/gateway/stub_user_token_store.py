@@ -8,12 +8,21 @@ class StubUserTokenStore:
         self.user_tokens = {}
 
     def store(self, user):
-        token_key = f"{user.team_id}-|-{user.user_id}"
         logging.debug(
             f"stored team: '{user.team_id}' user: '{user.user_id}' new token with key '{user.token}'"
         )
-        self.user_tokens[token_key] = user.token
+        self.user_tokens[self.__user_key(user)] = user.token
 
     def fetch(self, user):
         token = self.user_tokens[f"{user.team_id}-|-{user.user_id}"]
         return User(user_id=user.user_id, team_id=user.team_id, token=token)
+
+    def remove(self, user):
+        try:
+            del self.user_tokens[self.__user_key(user)]
+            return True
+        except KeyError:
+            return False
+
+    def __user_key(self, user: User) -> str:
+        return f"{user.team_id}-|-{user.user_id}"

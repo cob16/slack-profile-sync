@@ -22,3 +22,12 @@ class StubUserLinkStore:
                 return new_link
 
         raise KeyError
+
+    def unlink(self, user):
+        for user_link_set in self.__links:
+            if user in user_link_set:
+                if len(user_link_set) > 2:
+                    user_link_set.remove(user)
+                else:
+                    self.__links.remove(user_link_set)
+                return

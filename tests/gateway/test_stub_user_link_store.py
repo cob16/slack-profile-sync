@@ -13,6 +13,46 @@ def test_link():
     assert gateway.fetch(user2) == {user1}
 
 
+def test_unlink_is_silent_when_user_not_found():
+    gateway = StubUserLinkStore()
+    user1 = "user1"
+    user2 = "user2"
+    gateway.link(user1, user2)
+
+    gateway.unlink("random user id")
+
+
+def test_unlink_with_2_users():
+    gateway = StubUserLinkStore()
+    user1 = "user1"
+    user2 = "user2"
+    gateway.link(user1, user2)
+
+    gateway.unlink(user1)
+
+    with pytest.raises(KeyError):
+        gateway.fetch(user1)
+    with pytest.raises(KeyError):
+        gateway.fetch(user2)
+
+
+def test_unlink_with_3_users():
+    gateway = StubUserLinkStore()
+    user1 = "user1"
+    user2 = "user2"
+    user3 = "user3"
+    gateway.link(user1, user2)
+    gateway.link(user1, user3)
+
+    gateway.unlink(user3)
+
+    assert gateway.fetch(user1) == {user2}
+    assert gateway.fetch(user2) == {user1}
+
+    with pytest.raises(KeyError):
+        gateway.fetch(user3)
+
+
 def test_key_error_raised():
     gateway = StubUserLinkStore()
     with pytest.raises(KeyError):

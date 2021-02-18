@@ -1,0 +1,18 @@
+{
+  "token": "H8C6uM90xCsgosXBlp0NT1vG",
+  "team_id": "T019PQN3UAE",
+  "api_app_id": "A01ADLDLR3J",
+  "event": {
+    "type": "tokens_revoked",
+    "tokens": {
+      "oauth": [
+        "U019LN451HT"
+      ],
+      "bot": []
+    },
+    "event_ts": "1613603314.081991"
+  },
+  "type": "event_callback",
+  "event_id": "Ev01P63F72SC",
+  "event_time": 1613603314
+}

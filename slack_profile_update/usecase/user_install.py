@@ -8,6 +8,7 @@ from slack_profile_update.presenter.api_gateway_response import ApiGatewayRespon
 
 EXPECTED_SCOPE = "users:read,users.profile:write"
 
+
 class UserInstall:
     def __init__(self, client_id, client_secret, redirect_uri, user_token_store):
         self.__client_id = client_id
@@ -47,5 +48,7 @@ class UserInstall:
             self.__user_token_store.store(user)
             return response.ok_html(body)
         else:
-            logging.warning(f"scope differs from expected scope {gateway_response.scope} != {EXPECTED_SCOPE}")
+            logging.warning(
+                f"scope differs from expected scope {gateway_response.scope} != {EXPECTED_SCOPE}"
+            )
             return response.auth_error()
