@@ -65,7 +65,7 @@ def test_user_install(caplog, mocker):
     mocker.patch(
         "slack_profile_update.gateway.slack.authorisation_grant",
         return_value=AuthorisationGrantResponse(
-            True, "foo-team", "foo-user", "foo-token", EXPECTED_SCOPE
+            True, "foo-team", "foo-user", "foo-token", "users:read,users.profile:write"
         ),
     )
     client_id = "test client id"

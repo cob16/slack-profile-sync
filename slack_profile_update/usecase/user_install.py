@@ -6,7 +6,7 @@ from slack_profile_update.domain.user import User
 from slack_profile_update.gateway import slack
 from slack_profile_update.presenter.api_gateway_response import ApiGatewayResponse
 
-EXPECTED_SCOPE = "users:read,chat:write,users.profile:write"
+EXPECTED_SCOPE = "users:read,users.profile:write"
 
 class UserInstall:
     def __init__(self, client_id, client_secret, redirect_uri, user_token_store):
