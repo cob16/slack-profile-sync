@@ -16,8 +16,8 @@ class HandleEvent:
         environment,
         headers,
         raw_body,
-        user_token_store=StubUserLinkStore(),
-        user_link_store=StubUserTokenStore(),
+        user_token_store=StubUserTokenStore(),
+        user_link_store=StubUserLinkStore(),
     ):
         self.raw_body = raw_body
         self.headers = headers

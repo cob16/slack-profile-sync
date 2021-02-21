@@ -33,4 +33,5 @@ ngrok http 8080
 # add the https url returned to your slack app settings page  
 
 # and in another
-CLIENT_SECRET="" CLIENT_ID="" SLACK_SIGNING_SECRET="" REDIRECT_URI="" poetry run ./tools/localserver.py 8080```
+CLIENT_SECRET="" CLIENT_ID="" SLACK_SIGNING_SECRET="" REDIRECT_URI="" poetry run ./tools/localserver.py 8080
+```
