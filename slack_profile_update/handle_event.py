@@ -6,14 +6,24 @@ from slack_profile_update.gateway.stub_user_token_store import StubUserTokenStor
 from slack_profile_update.presenter.api_gateway_response import ApiGatewayResponse
 from slack_profile_update.usecase.update_all_profiles import UpdateAllProfiles
 from slack_profile_update.usecase.url_verification import UrlVerification
+from slack_profile_update.usecase.user_uninstall import UserUninstall
 from slack_profile_update.usecase.verify_request import VerifyRequest
 
 
 class HandleEvent:
-    def __init__(self, environment, headers, raw_body):
+    def __init__(
+        self,
+        environment,
+        headers,
+        raw_body,
+        user_token_store=StubUserLinkStore(),
+        user_link_store=StubUserTokenStore(),
+    ):
         self.raw_body = raw_body
         self.headers = headers
         self.signing_secret = environment["SLACK_SIGNING_SECRET"]
+        self.user_link_store = user_link_store
+        self.user_token_store = user_token_store
 
     def execute(self):
         response = ApiGatewayResponse()
@@ -31,13 +41,17 @@ class HandleEvent:
             response.ok(response_body)
         elif type == "event_callback":
             event = body["event"]
-            logging.info(f"received event {event['type']}")
+            logging.info(f"Received event: {event['type']}")
             if event["type"] == "user_change":
-                link_store = StubUserLinkStore()
-                token_store = StubUserTokenStore()
                 UpdateAllProfiles(
-                    user_link_store=link_store,
-                    user_token_store=token_store,
+                    user_link_store=self.user_link_store,
+                    user_token_store=self.user_token_store,
+                ).execute(body)
+                response.ok()
+            elif event["type"] == "tokens_revoked":
+                UserUninstall(
+                    user_link_store=self.user_link_store,
+                    user_token_store=self.user_token_store,
                 ).execute(body)
                 response.ok()
             else:
