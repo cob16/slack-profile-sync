@@ -1,6 +1,6 @@
 import pytest
 
-from slack_profile_update.domain.user import User
+from slack_profile_update.domain.slackuser import SlackUser
 from slack_profile_update.gateway.stub_user_link_store import StubUserLinkStore
 
 
@@ -130,10 +130,10 @@ def test_handles_duplicates_calls():
 
 def test_links_with_user_object():
     gateway = StubUserLinkStore()
-    user1 = User("user1", "team1")
-    user2 = User("user2", "team2")
-    user3 = User("user3", "team3")
-    user4 = User("user4", "team4")
+    user1 = SlackUser("user1", "team1")
+    user2 = SlackUser("user2", "team2")
+    user3 = SlackUser("user3", "team3")
+    user4 = SlackUser("user4", "team4")
     gateway.link(user1, user2)
     gateway.link(user2, user3)
     gateway.link(user3, user4)

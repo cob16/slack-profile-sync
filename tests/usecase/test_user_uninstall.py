@@ -3,7 +3,7 @@ import logging
 
 import pytest
 
-from slack_profile_update.domain.user import User
+from slack_profile_update.domain.slackuser import SlackUser
 from slack_profile_update.gateway.stub_user_link_store import StubUserLinkStore
 from slack_profile_update.gateway.stub_user_token_store import StubUserTokenStore
 from slack_profile_update.handle_event import HandleEvent
@@ -15,9 +15,9 @@ def test_user_uninstall_removed_users_from_gateways(test_file):
     event = test_file("user_token_revoked.json")
     secret = "secret"
 
-    user_to_be_removed = User("U019LN451HT", "T019PQN3UAE", "token1")
-    linked_user_1 = User("user1", "team1", "token2")
-    linked_user_2 = User("user2", "team1", "token3")
+    user_to_be_removed = SlackUser("U019LN451HT", "T019PQN3UAE", "token1")
+    linked_user_1 = SlackUser("user1", "team1", "token2")
+    linked_user_2 = SlackUser("user2", "team1", "token3")
 
     link_store = StubUserLinkStore()
     link_store.link(user_to_be_removed, linked_user_1)
@@ -57,7 +57,7 @@ def test_user_uninstall_removed_users_from_gateways(test_file):
 def test_user_uninstall_logs_message(caplog, test_file):
     event = json.loads(test_file("user_token_revoked.json"))
 
-    user_to_be_removed = User("U019LN451HT", "T019PQN3UAE", "token1")
+    user_to_be_removed = SlackUser("U019LN451HT", "T019PQN3UAE", "token1")
     token_store = StubUserTokenStore()
     token_store.store(user_to_be_removed)
 

@@ -5,9 +5,9 @@ description = ""
 authors = ["cob16 <public+github@cormacbrady.info>"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
-black = "^20.8b1"
+python = "^3.8.0"
 slack-sdk = "^3.3.0"
+pg8000 = "^1.21.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2"

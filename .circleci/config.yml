@@ -28,6 +28,9 @@ jobs:
         paths:
           - /home/circleci/project/.poetry/virtualenvs
     - run:
+        nane: start test db
+        command: make run-db
+    - run:
         name: run tests
         command: poetry run pytest --block-network
 

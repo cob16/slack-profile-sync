@@ -1,11 +1,11 @@
 import pytest
 
-from slack_profile_update.domain.user import User
+from slack_profile_update.domain.slackuser import SlackUser
 from slack_profile_update.gateway.stub_user_token_store import StubUserTokenStore
 
 
 def test_can_store_a_user_token():
-    StubUserTokenStore().store(User("team", "user", "test-token"))
+    StubUserTokenStore().store(SlackUser("team", "user", "test-token"))
 
 
 def test_can_get_a_user_token():
@@ -14,7 +14,7 @@ def test_can_get_a_user_token():
     expected_token = "foobar"
     gateway = StubUserTokenStore()
 
-    expected_user = User(user_id=user_id, team_id=team_id, token=expected_token)
+    expected_user = SlackUser(user_id=user_id, team_id=team_id, token=expected_token)
     gateway.store(expected_user)
 
     user = gateway.fetch(expected_user)
@@ -28,7 +28,7 @@ def test_remove_a_user_token():
     user_id = "user"
     expected_token = "foobar"
     gateway = StubUserTokenStore()
-    expected_user = User(user_id=user_id, team_id=team_id, token=expected_token)
+    expected_user = SlackUser(user_id=user_id, team_id=team_id, token=expected_token)
     gateway.store(expected_user)
     gateway.fetch(expected_user)
 
@@ -43,8 +43,8 @@ def test_remove_non_existent_is_silent():
     user_id = "user"
     expected_token = "foobar"
     gateway = StubUserTokenStore()
-    expected_user = User(user_id=user_id, team_id=team_id, token=expected_token)
-    unstored_user = User(user_id="foo", team_id="bar", token=None)
+    expected_user = SlackUser(user_id=user_id, team_id=team_id, token=expected_token)
+    unstored_user = SlackUser(user_id="foo", team_id="bar", token=None)
 
     gateway.store(expected_user)
 

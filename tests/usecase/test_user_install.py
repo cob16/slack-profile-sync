@@ -1,6 +1,6 @@
 import logging
 
-from slack_profile_update.domain.user import User
+from slack_profile_update.domain.slackuser import SlackUser
 from slack_profile_update.gateway import slack
 from slack_profile_update.gateway.slack import AuthorisationGrantResponse
 from slack_profile_update.gateway.stub_user_token_store import StubUserTokenStore
@@ -10,7 +10,7 @@ from tests.test_handle_request import example_request
 
 
 def test_user_install_stores_token_if_success(mocker):
-    expected_user = User(team_id="foo-team", user_id="foo-user")
+    expected_user = SlackUser(team_id="foo-team", user_id="foo-user")
     mocker.patch(
         "slack_profile_update.gateway.slack.authorisation_grant",
         return_value=AuthorisationGrantResponse(
@@ -37,7 +37,7 @@ def test_user_install_stores_token_if_success(mocker):
 
 
 def test_user_install_fails_if_scope_is_incorrect(mocker):
-    expected_user = User(team_id="foo-team", user_id="foo-user")
+    expected_user = SlackUser(team_id="foo-team", user_id="foo-user")
     mocker.patch(
         "slack_profile_update.gateway.slack.authorisation_grant",
         return_value=AuthorisationGrantResponse(

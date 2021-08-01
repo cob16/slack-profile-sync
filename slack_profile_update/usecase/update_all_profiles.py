@@ -1,6 +1,6 @@
 import logging
 
-from slack_profile_update.domain.user import User
+from slack_profile_update.domain.slackuser import SlackUser
 from slack_profile_update.gateway import slack
 
 
@@ -22,7 +22,9 @@ class UpdateAllProfiles:
             event.status_expiration,
         )
         try:
-            user_list = self.user_link_store.fetch(User(event.user_id, event.team_id))
+            user_list = self.user_link_store.fetch(
+                SlackUser(event.user_id, event.team_id)
+            )
             for user in user_list:
                 user_with_token = self.user_token_store.fetch(user)
                 slack.update_status(

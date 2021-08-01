@@ -2,7 +2,7 @@ import json
 import logging
 from unittest.mock import call
 
-from slack_profile_update.domain.user import User
+from slack_profile_update.domain.slackuser import SlackUser
 from slack_profile_update.gateway import slack
 from slack_profile_update.gateway.stub_user_link_store import StubUserLinkStore
 from slack_profile_update.gateway.stub_user_token_store import StubUserTokenStore
@@ -50,9 +50,9 @@ def test_updates_status_of_linked_users(caplog, test_file, mocker):
     )
     event = json.loads(test_file("example_user_updated_event.json"))
 
-    source_user = User("U019LN451HT", "T019PQN3UAE", "token1")
-    dest_user_1 = User("user1", "team1", "token2")
-    dest_user_2 = User("user3", "team3", "token3")
+    source_user = SlackUser("U019LN451HT", "T019PQN3UAE", "token1")
+    dest_user_1 = SlackUser("user1", "team1", "token2")
+    dest_user_2 = SlackUser("user3", "team3", "token3")
 
     link_store = StubUserLinkStore()
     link_store.link(source_user, dest_user_1)

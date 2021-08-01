@@ -1,6 +1,6 @@
 import logging
 
-from slack_profile_update.domain.user import User
+from slack_profile_update.domain.slackuser import SlackUser
 
 
 class StubUserTokenStore:
@@ -15,7 +15,7 @@ class StubUserTokenStore:
 
     def fetch(self, user):
         token = self.user_tokens[f"{user.team_id}-|-{user.user_id}"]
-        return User(user_id=user.user_id, team_id=user.team_id, token=token)
+        return SlackUser(user_id=user.user_id, team_id=user.team_id, token=token)
 
     def remove(self, user):
         try:
@@ -24,5 +24,5 @@ class StubUserTokenStore:
         except KeyError:
             return False
 
-    def __user_key(self, user: User) -> str:
+    def __user_key(self, user: SlackUser) -> str:
         return f"{user.team_id}-|-{user.user_id}"

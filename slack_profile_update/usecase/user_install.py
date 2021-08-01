@@ -2,7 +2,7 @@ import logging
 
 from slack_sdk.oauth import RedirectUriPageRenderer
 
-from slack_profile_update.domain.user import User
+from slack_profile_update.domain.slackuser import SlackUser
 from slack_profile_update.gateway import slack
 from slack_profile_update.presenter.api_gateway_response import ApiGatewayResponse
 
@@ -40,7 +40,7 @@ class UserInstall:
             body = RedirectUriPageRenderer(
                 install_path="", redirect_uri_path=""
             ).render_success_page(app_id="fakeappid", team_id=None)
-            user = User(
+            user = SlackUser(
                 team_id=gateway_response.team,
                 user_id=gateway_response.user,
                 token=gateway_response.token,
