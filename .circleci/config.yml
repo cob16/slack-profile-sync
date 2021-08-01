@@ -16,6 +16,7 @@ jobs:
  test:
   executor: python
   steps:
+    - setup_remote_docker
     - checkout
     - restore_cache:
         keys:
