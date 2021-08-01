@@ -33,7 +33,7 @@ jobs:
         command: make run-db
     - run:
         name: run tests
-        command: poetry run pytest --block-network
+        command: poetry run pytest
 
 workflows:
   main:
