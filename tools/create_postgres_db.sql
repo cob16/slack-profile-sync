@@ -16,5 +16,5 @@ create table "SlackUser"
             references "AppUser"
 );
 
-create unique index slackuser_slackid_uindex
-    on "SlackUser" (slackID);
+create index slackuser_userid_index
+    on "SlackUser" ("userID");
