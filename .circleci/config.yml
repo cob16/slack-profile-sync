@@ -5,6 +5,9 @@ executors:
     description: CircleCI python image that includes poetry
     docker:
     - image: circleci/python:latest
+    - image: circleci/postgres:alpine-ram
+      environment:
+        POSTGRES_USER: postgres
     environment:
       POETRY_CACHE_DIR: /home/circleci/project/.poetry
     parameters:
@@ -19,8 +22,11 @@ jobs:
     - setup_remote_docker
     - checkout
     - run:
-        nane: start test db
-        command: make run-db
+        name: install postgress client
+        command: apt install postgresql-client
+    - run:
+        name: setup db
+        command: psql -a -f tools/create_postgres_db.sql
     - restore_cache:
         keys:
           - 'deps-{{ checksum "poetry.lock" }}'
@@ -31,9 +37,6 @@ jobs:
         key: 'deps-{{ checksum "poetry.lock" }}'
         paths:
           - /home/circleci/project/.poetry/virtualenvs
-    - run:
-        name: run tests
-        command: docker logs posttest
     - run:
         name: run tests
         command: poetry run pytest
