@@ -18,6 +18,9 @@ jobs:
   steps:
     - setup_remote_docker
     - checkout
+    - run:
+        nane: start test db
+        command: make run-db
     - restore_cache:
         keys:
           - 'deps-{{ checksum "poetry.lock" }}'
@@ -29,8 +32,8 @@ jobs:
         paths:
           - /home/circleci/project/.poetry/virtualenvs
     - run:
-        nane: start test db
-        command: make run-db
+        name: run tests
+        command: docker logs posttest
     - run:
         name: run tests
         command: poetry run pytest
