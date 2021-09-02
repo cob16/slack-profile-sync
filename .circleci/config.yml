@@ -23,7 +23,7 @@ jobs:
     - checkout
     - run:
         name: install postgress client
-        command: apt install postgresql-client
+        command: sudo apt install -y postgresql-client
     - run:
         name: setup db
         command: psql -a -f tools/create_postgres_db.sql
