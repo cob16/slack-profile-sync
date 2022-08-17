@@ -6,14 +6,15 @@ from slack_profile_update.domain.slackuser import SlackUser
 
 
 class PostgressGateway:
-    def __init__(self, password, user="postgres"):
+    def __init__(self, password, database, user="postgres"):
         self.user = user
         self.password = password
+        self.database = database
 
     @contextmanager
     def open(self):
         try:
-            con = pg8000.native.Connection(self.user, password=self.password)
+            con = pg8000.native.Connection(self.user, password=self.password, database=self.database)
             gateway = self._InnerGateway(connection=con)
             yield gateway
         finally:
