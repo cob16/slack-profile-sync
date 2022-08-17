@@ -4,8 +4,8 @@ executors:
   python:
     description: CircleCI python image that includes poetry
     docker:
-    - image: circleci/python:latest
-    - image: circleci/postgres:alpine-ram
+    - image: cimg/python:latest
+    - image: cimg/postgres:latest
       environment:
         POSTGRES_USER: postgres
     environment:
