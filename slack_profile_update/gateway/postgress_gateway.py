@@ -14,7 +14,9 @@ class PostgressGateway:
     @contextmanager
     def open(self):
         try:
-            con = pg8000.native.Connection(self.user, password=self.password, database=self.database)
+            con = pg8000.native.Connection(
+                self.user, password=self.password, database=self.database
+            )
             gateway = self._InnerGateway(connection=con)
             yield gateway
         finally:
@@ -53,4 +55,3 @@ class PostgressGateway:
                 ids = r[0].split("-|-")
                 users.append(SlackUser(team_id=ids[0], user_id=ids[1], token=r[1]))
             return users
-

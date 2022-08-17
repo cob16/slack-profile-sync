@@ -7,8 +7,11 @@ from slack_profile_update.gateway.postgress_gateway import PostgressGateway
 def get_db_name():
     return environ.get("TEST_DATABASE_NAME", "postgres")
 
+
 def test_create_app_user():
-    with PostgressGateway(password="pytestPassword", database=get_db_name()).open() as gateway:
+    with PostgressGateway(
+        password="pytestPassword", database=get_db_name()
+    ).open() as gateway:
         gateway.connection.run("START TRANSACTION")
 
         assert gateway.test_connection() is True
@@ -21,7 +24,9 @@ def test_create_app_user():
 
 
 def test_create_slack_user():
-    with PostgressGateway(password="pytestPassword", database=get_db_name()).open() as gateway:
+    with PostgressGateway(
+        password="pytestPassword", database=get_db_name()
+    ).open() as gateway:
         gateway.connection.run("START TRANSACTION")
 
         app_user_id = gateway.create_app_user()
@@ -34,7 +39,9 @@ def test_create_slack_user():
 
 
 def test_update_slack_user():
-    with PostgressGateway(password="pytestPassword", database=get_db_name()).open() as gateway:
+    with PostgressGateway(
+        password="pytestPassword", database=get_db_name()
+    ).open() as gateway:
         gateway.connection.run("START TRANSACTION")
 
         app_user_id_1 = gateway.create_app_user()
@@ -58,7 +65,9 @@ def test_update_slack_user():
 
 
 def test_get_slack_users():
-    with PostgressGateway(password="pytestPassword", database=get_db_name()).open() as gateway:
+    with PostgressGateway(
+        password="pytestPassword", database=get_db_name()
+    ).open() as gateway:
         gateway.connection.run("START TRANSACTION")
 
         app_user_id = gateway.create_app_user()
@@ -85,6 +94,7 @@ def test_get_slack_users():
 
 
 def test_connection():
-    with PostgressGateway(password="pytestPassword", database=get_db_name()).open() as gateway:
+    with PostgressGateway(
+        password="pytestPassword", database=get_db_name()
+    ).open() as gateway:
         assert gateway.test_connection() is True
-
