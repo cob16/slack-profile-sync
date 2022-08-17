@@ -22,7 +22,6 @@ jobs:
  test:
   executor: python
   steps:
-    - setup_remote_docker
     - checkout
     - run:
         name: update package index
