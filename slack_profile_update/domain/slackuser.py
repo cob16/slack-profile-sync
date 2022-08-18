@@ -1,8 +1,11 @@
+from dataclasses import dataclass
+
+
+@dataclass
 class SlackUser:
-    def __init__(self, user_id: str, team_id: str, token=None):
-        self.user_id = user_id
-        self.team_id = team_id
-        self.token = token
+    user_id: str
+    team_id: str
+    token: str = None
 
     def __hash__(self):
         return hash((self.user_id, self.team_id))
