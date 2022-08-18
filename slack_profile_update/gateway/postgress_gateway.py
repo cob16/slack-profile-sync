@@ -13,6 +13,7 @@ class PostgressGateway:
 
     @contextmanager
     def open(self):
+        con = None
         try:
             con = pg8000.native.Connection(
                 self.user, password=self.password, database=self.database
@@ -20,7 +21,8 @@ class PostgressGateway:
             gateway = self._InnerGateway(connection=con)
             yield gateway
         finally:
-            con.close()
+            if con:
+                con.close()
 
     class _InnerGateway:
         def __init__(self, connection):
