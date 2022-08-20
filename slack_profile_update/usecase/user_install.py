@@ -10,11 +10,11 @@ EXPECTED_SCOPE = "users:read,users.profile:write"
 
 
 class UserInstall:
-    def __init__(self, client_id, client_secret, redirect_uri, user_token_store):
+    def __init__(self, client_id, client_secret, redirect_uri, user_store):
         self.__client_id = client_id
         self.__client_secret = client_secret
         self.__redirect_uri = redirect_uri
-        self.__user_token_store = user_token_store
+        self.__user_store = user_store
 
     def execute(self, code, state):
         logging.debug(
@@ -45,7 +45,8 @@ class UserInstall:
                 user_id=gateway_response.user,
                 token=gateway_response.token,
             )
-            self.__user_token_store.store(user)
+            app_user_id = self.__user_store.create_app_user()
+            self.__user_store.create_slack_user(user, app_user_id)
             return response.ok_html(body)
         else:
             logging.warning(

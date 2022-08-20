@@ -3,7 +3,7 @@ import logging
 from slack_profile_update.domain.slackuser import SlackUser
 from slack_profile_update.gateway import slack
 from slack_profile_update.gateway.slack import AuthorisationGrantResponse
-from slack_profile_update.gateway.stub_user_token_store import StubUserTokenStore
+from slack_profile_update.gateway.stub_gateway import StubUserGateway
 from slack_profile_update.handle_request import HandleRequest
 from slack_profile_update.usecase.user_install import UserInstall, EXPECTED_SCOPE
 from tests.test_handle_request import example_request
@@ -23,17 +23,18 @@ def test_user_install_stores_token_if_success(mocker):
     )
     client_id = "test client id"
     client_secret = "test client secret"
-    stub_user_token_store = StubUserTokenStore()
-    user_install = UserInstall(
-        client_id=client_id,
-        client_secret=client_secret,
-        redirect_uri="example.com",
-        user_token_store=stub_user_token_store,
-    )
-    response = user_install.execute("foobar", "test-state")
-    assert response.present()["statusCode"] == 200
+    with StubUserGateway().open() as user_store:
+        user_install = UserInstall(
+            client_id=client_id,
+            client_secret=client_secret,
+            redirect_uri="example.com",
+            user_store=user_store,
+        )
+        response = user_install.execute("foobar", "test-state")
+        assert response.present()["statusCode"] == 200
 
-    assert stub_user_token_store.fetch(expected_user).token == "foo-token"
+        assert len(user_store._users.keys()) == 1
+        assert len(user_store._users.values()) == 1
 
 
 def test_user_install_fails_if_scope_is_incorrect(mocker):
@@ -50,15 +51,15 @@ def test_user_install_fails_if_scope_is_incorrect(mocker):
     )
     client_id = "test client id"
     client_secret = "test client secret"
-    stub_user_token_store = StubUserTokenStore()
-    user_install = UserInstall(
-        client_id=client_id,
-        client_secret=client_secret,
-        redirect_uri="example.com",
-        user_token_store=stub_user_token_store,
-    )
-    response = user_install.execute("foobar", "test-state")
-    assert response.present()["statusCode"] == 401
+    with StubUserGateway().open() as stub_user_token_store:
+        user_install = UserInstall(
+            client_id=client_id,
+            client_secret=client_secret,
+            redirect_uri="example.com",
+            user_store=stub_user_token_store,
+        )
+        response = user_install.execute("foobar", "test-state")
+        assert response.present()["statusCode"] == 401
 
 
 def test_user_install(caplog, mocker):

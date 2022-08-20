@@ -1,7 +1,7 @@
 from os import environ
 
 from slack_profile_update.domain.slackuser import SlackUser
-from slack_profile_update.gateway.postgress_gateway import PostgressGateway
+from slack_profile_update.gateway.stub_gateway import StubUserGateway
 
 
 def get_db_name():
@@ -9,7 +9,7 @@ def get_db_name():
 
 
 def test_create_app_user():
-    with PostgressGateway(
+    with StubUserGateway(
         password="pytestPassword", database=get_db_name()
     ).open() as gateway:
         gateway.connection.run("START TRANSACTION")
@@ -24,7 +24,7 @@ def test_create_app_user():
 
 
 def test_create_slack_user():
-    with PostgressGateway(
+    with StubUserGateway(
         password="pytestPassword", database=get_db_name()
     ).open() as gateway:
         gateway.connection.run("START TRANSACTION")
@@ -38,41 +38,16 @@ def test_create_slack_user():
         gateway.connection.run("ROLLBACK")
 
 
-def test_update_slack_user():
-    with PostgressGateway(
-        password="pytestPassword", database=get_db_name()
-    ).open() as gateway:
-        gateway.connection.run("START TRANSACTION")
-
-        app_user_id_1 = gateway.create_app_user()
-        app_user_id_2 = gateway.create_app_user()
-        gateway.create_slack_user(
-            SlackUser(user_id="slackid", team_id="teamid", token="test_token_1"),
-            app_user_id=app_user_id_1,
-        )
-        gateway.create_slack_user(
-            SlackUser(user_id="slackid", team_id="teamid", token="test_token_2"),
-            app_user_id=app_user_id_2,
-        )
-
-        assert len(gateway.get_slack_users(app_user_id=app_user_id_1)) == 0
-
-        result = gateway.get_slack_users(app_user_id=app_user_id_2)
-        assert len(result) == 1
-        assert result[0].token == "test_token_2"
-
-        gateway.connection.run("ROLLBACK")
-
-
 def test_get_slack_users():
-    with PostgressGateway(
+    with StubUserGateway(
         password="pytestPassword", database=get_db_name()
     ).open() as gateway:
         gateway.connection.run("START TRANSACTION")
 
         app_user_id = gateway.create_app_user()
+        user_1 = SlackUser(user_id="user_1", team_id="team_1", token="test_token_1")
         gateway.create_slack_user(
-            SlackUser(user_id="user_1", team_id="team_1", token="test_token_1"),
+            user_1,
             app_user_id=app_user_id,
         )
         gateway.create_slack_user(
@@ -86,15 +61,13 @@ def test_get_slack_users():
 
         results = gateway.get_slack_users(app_user_id=app_user_id)
         assert len(results) == 3
-        assert results[0].token == "test_token_1"
-        assert results[0].user_id == "user_1"
-        assert results[0].team_id == "team_1"
+        assert user_1 in results
 
         gateway.connection.run("ROLLBACK")
 
 
 def test_get_linked_users():
-    with PostgressGateway(
+    with StubUserGateway(
         password="pytestPassword", database=get_db_name()
     ).open() as gateway:
         gateway.connection.run("START TRANSACTION")
@@ -117,42 +90,8 @@ def test_get_linked_users():
         gateway.connection.run("ROLLBACK")
 
 
-def test_get_linked_users_invalid_user():
-    with PostgressGateway(
-        password="pytestPassword", database=get_db_name()
-    ).open() as gateway:
-        gateway.connection.run("START TRANSACTION")
-
-        invalid_user = SlackUser(
-            user_id="user_1", team_id="team_1", token="test_token_1"
-        )
-
-        results = gateway.get_linked_users(invalid_user)
-        assert len(results) == 0
-
-        gateway.connection.run("ROLLBACK")
-
-
-def test_get_linked_users_no_results():
-    with PostgressGateway(
-        password="pytestPassword", database=get_db_name()
-    ).open() as gateway:
-        gateway.connection.run("START TRANSACTION")
-
-        app_user_id = gateway.create_app_user()
-
-        user_1 = SlackUser(user_id="user_1", team_id="team_1", token="test_token_1")
-
-        gateway.create_slack_user(user_1, app_user_id)
-
-        results = gateway.get_linked_users(user_1)
-        assert len(results) == 0
-
-        gateway.connection.run("ROLLBACK")
-
-
 def test_connection():
-    with PostgressGateway(
+    with StubUserGateway(
         password="pytestPassword", database=get_db_name()
     ).open() as gateway:
         assert gateway.test_connection() is True

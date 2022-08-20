@@ -3,6 +3,7 @@ from time import time
 
 from slack_sdk.signature import SignatureVerifier
 
+from slack_profile_update.gateway.stub_gateway import StubUserGateway
 from slack_profile_update.handle_event import HandleEvent
 from slack_profile_update.presenter.api_gateway_response import ApiGatewayResponse
 from slack_profile_update.usecase.verify_request import VerifyRequest
@@ -116,6 +117,7 @@ def test_invalid_request_is_blocked():
         environment={"SLACK_SIGNING_SECRET": "foo"},
         headers={},
         raw_body=json.dumps({"this is a test": "foobar"}),
+        user_store=StubUserGateway(),
     ).execute()
 
     assert response.present() == ApiGatewayResponse().auth_error().present()
@@ -129,6 +131,7 @@ def test_handle_url_verification_event(test_file):
         environment={"SLACK_SIGNING_SECRET": secret},
         headers=event_signature_headers(secret, event),
         raw_body=event,
+        user_store=StubUserGateway(),
     ).execute()
 
     expected_body = {

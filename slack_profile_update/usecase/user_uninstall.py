@@ -4,16 +4,14 @@ from slack_profile_update.domain.slackuser import SlackUser
 
 
 class UserUninstall:
-    def __init__(self, user_link_store, user_token_store):
-        self.__user_link_store = user_link_store
-        self.__user_token_store = user_token_store
+    def __init__(self, user_store):
+        self.__user_store = user_store
 
     def execute(self, event_map):
         event = TokenRevokedReader(event_map)
         for user_id in event.user_ids:
             user = SlackUser(user_id=user_id, team_id=event.team_id)
-            self.__user_link_store.unlink(user)
-            user_removed = self.__user_token_store.remove(user)
+            user_removed = self.__user_store.delete_slack_user(user)
             if user_removed:
                 logging.info("uninstalled user")
             else:

@@ -5,9 +5,8 @@ from slack_profile_update.gateway import slack
 
 
 class UpdateAllProfiles:
-    def __init__(self, user_link_store, user_token_store):
-        self.user_link_store = user_link_store
-        self.user_token_store = user_token_store
+    def __init__(self, user_store):
+        self.user_store = user_store
 
     def execute(self, update_event):
         event = UpdateEventReader(update_event)
@@ -22,13 +21,11 @@ class UpdateAllProfiles:
             event.status_expiration,
         )
         try:
-            user_list = self.user_link_store.fetch(
-                SlackUser(event.user_id, event.team_id)
-            )
+            event_user = SlackUser(user_id=event.user_id, team_id=event.team_id)
+            user_list = self.user_store.get_linked_users(event_user)
             for user in user_list:
-                user_with_token = self.user_token_store.fetch(user)
                 slack.update_status(
-                    token=user_with_token.token,
+                    token=user.token,
                     status_text=event.status_text,
                     status_emoji=event.status_emoji,
                     status_expiration=event.status_expiration,
