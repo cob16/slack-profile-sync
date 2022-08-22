@@ -71,24 +71,26 @@ def test_user_install(caplog, mocker):
     )
     client_id = "test client id"
     client_secret = "test client secret"
-    with caplog.at_level(logging.DEBUG):
-        response = HandleRequest().execute(
-            {
-                "SLACK_SIGNING_SECRET": "is_secret",
-                "CLIENT_ID": client_id,
-                "CLIENT_SECRET": client_secret,
-                "REDIRECT_URI": "example.com",
-            },
-            example_request(
-                headers=None,
-                http_method="GET",
-                path="/oauth/authorization_grant",
-                query_arguments={
-                    "code": ["foobar"],
-                    "state": ["test-state"],
+    with StubUserGateway().open() as user_store:
+        with caplog.at_level(logging.DEBUG):
+            response = HandleRequest().execute(
+                environment={
+                    "SLACK_SIGNING_SECRET": "is_secret",
+                    "CLIENT_ID": client_id,
+                    "CLIENT_SECRET": client_secret,
+                    "REDIRECT_URI": "example.com",
                 },
-            ),
-        )
+                user_store=user_store,
+                event=example_request(
+                    headers=None,
+                    http_method="GET",
+                    path="/oauth/authorization_grant",
+                    query_arguments={
+                        "code": ["foobar"],
+                        "state": ["test-state"],
+                    },
+                ),
+            )
 
     slack.authorisation_grant.assert_called_once_with(
         client_id=client_id,
@@ -105,22 +107,24 @@ def test_user_install(caplog, mocker):
 
 def test_user_install_missing_code(caplog):
     secret = "is_secret"
-    with caplog.at_level(logging.DEBUG):
-        response = HandleRequest().execute(
-            {
-                "SLACK_SIGNING_SECRET": secret,
-                "CLIENT_ID": "bar",
-                "CLIENT_SECRET": "foo",
-            },
-            example_request(
-                headers=None,
-                http_method="GET",
-                path="/oauth/authorization_grant",
-                query_arguments={
-                    "state": ["test-state"],
+    with StubUserGateway().open() as user_store:
+        with caplog.at_level(logging.DEBUG):
+            response = HandleRequest().execute(
+                environment={
+                    "SLACK_SIGNING_SECRET": secret,
+                    "CLIENT_ID": "bar",
+                    "CLIENT_SECRET": "foo",
                 },
-            ),
-        )
+                user_store=user_store,
+                event=example_request(
+                    headers=None,
+                    http_method="GET",
+                    path="/oauth/authorization_grant",
+                    query_arguments={
+                        "state": ["test-state"],
+                    },
+                ),
+            )
 
     assert response["statusCode"] == 404
     assert response["body"] is None
@@ -130,21 +134,23 @@ def test_user_install_missing_code(caplog):
 
 def test_user_install_missing_sate(caplog):
     secret = "is_secret"
-    with caplog.at_level(logging.DEBUG):
-        response = HandleRequest().execute(
-            {
-                "SLACK_SIGNING_SECRET": secret,
-                "CLIENT_ID": "bar",
-                "CLIENT_SECRET": "foo",
-                "REDIRECT_URI": "example.com",
-            },
-            example_request(
-                headers=None,
-                http_method="GET",
-                path="/oauth/authorization_grant",
-                query_arguments={"code": ["foobar"]},
-            ),
-        )
+    with StubUserGateway().open() as user_store:
+        with caplog.at_level(logging.DEBUG):
+            response = HandleRequest().execute(
+                environment={
+                    "SLACK_SIGNING_SECRET": secret,
+                    "CLIENT_ID": "bar",
+                    "CLIENT_SECRET": "foo",
+                    "REDIRECT_URI": "example.com",
+                },
+                user_store=user_store,
+                event=example_request(
+                    headers=None,
+                    http_method="GET",
+                    path="/oauth/authorization_grant",
+                    query_arguments={"code": ["foobar"]},
+                ),
+            )
 
     assert response["statusCode"] == 404
     assert response["body"] is None
@@ -161,24 +167,26 @@ def test_user_install_returns_failure(caplog, mocker):
     client_id = "test client id"
     client_secret = "test client secret"
     redirect_uri = "test-redirect-url.com"
-    with caplog.at_level(logging.DEBUG):
-        response = HandleRequest().execute(
-            {
-                "SLACK_SIGNING_SECRET": slack_signing_secret,
-                "CLIENT_ID": client_id,
-                "CLIENT_SECRET": client_secret,
-                "REDIRECT_URI": redirect_uri,
-            },
-            example_request(
-                headers=None,
-                http_method="GET",
-                path="/oauth/authorization_grant",
-                query_arguments={
-                    "code": ["foobar"],
-                    "state": ["test-state"],
+    with StubUserGateway().open() as user_store:
+        with caplog.at_level(logging.DEBUG):
+            response = HandleRequest().execute(
+                environment={
+                    "SLACK_SIGNING_SECRET": slack_signing_secret,
+                    "CLIENT_ID": client_id,
+                    "CLIENT_SECRET": client_secret,
+                    "REDIRECT_URI": redirect_uri,
                 },
-            ),
-        )
+                user_store=user_store,
+                event=example_request(
+                    headers=None,
+                    http_method="GET",
+                    path="/oauth/authorization_grant",
+                    query_arguments={
+                        "code": ["foobar"],
+                        "state": ["test-state"],
+                    },
+                ),
+            )
 
     slack.authorisation_grant.assert_called_once_with(
         client_id=client_id,

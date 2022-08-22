@@ -1,8 +1,6 @@
 import json
 import logging
 
-import pytest
-
 from slack_profile_update.domain.slackuser import SlackUser
 from slack_profile_update.gateway.stub_gateway import StubUserGateway
 from slack_profile_update.handle_event import HandleEvent

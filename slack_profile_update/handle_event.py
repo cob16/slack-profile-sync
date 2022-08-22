@@ -1,7 +1,6 @@
 import json
 import logging
 
-from slack_profile_update.gateway.stub_gateway import StubUserGateway
 from slack_profile_update.presenter.api_gateway_response import ApiGatewayResponse
 from slack_profile_update.usecase.update_all_profiles import UpdateAllProfiles
 from slack_profile_update.usecase.url_verification import UrlVerification

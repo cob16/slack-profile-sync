@@ -5,6 +5,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib import parse
 import logging
 
+from slack_profile_update.gateway.postgress_gateway import PostgressGateway
 from slack_profile_update.handle_request import HandleRequest
 
 
@@ -15,11 +16,14 @@ class S(BaseHTTPRequestHandler):
             self.send_error(404)
         else:
             print(self.path)
-
-            response = HandleRequest().execute(
-                os.environ,
-                event=self.api_gateway_proxy_event(None, "GET"),
-            )
+            with PostgressGateway(
+                password="pytestPassword", database="postgres"
+            ).open() as user_store:
+                response = HandleRequest().execute(
+                    environment=os.environ,
+                    user_store=user_store,
+                    event=self.api_gateway_proxy_event(None, "GET"),
+                )
             logging.debug(f"returning {response}")
 
             self.handle_response(response)
@@ -38,9 +42,13 @@ class S(BaseHTTPRequestHandler):
         )
 
         event = self.api_gateway_proxy_event(post_data, "POST")
-
-        response = HandleRequest().execute(os.environ, event)
-        self.handle_response(response)
+        with PostgressGateway(
+            password="pytestPassword", database="postgres"
+        ).open() as user_store:
+            response = HandleRequest().execute(
+                environment=os.environ, user_store=user_store, event=event
+            )
+            self.handle_response(response)
 
     def api_gateway_proxy_event(self, post_data, http_method):
         querys = parse.urlparse(self.path).query
