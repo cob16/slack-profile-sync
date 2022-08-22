@@ -21,5 +21,5 @@ class AbstractGateway(ABC):
         pass
 
     @abstractmethod
-    def delete_slack_user(self, user: SlackUser):
+    def delete_slack_user(self, user: SlackUser) -> bool:
         pass

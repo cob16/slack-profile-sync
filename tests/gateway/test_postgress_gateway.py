@@ -170,8 +170,10 @@ def test_delete_slack_user():
 
         assert len(gateway.get_slack_users(app_user_id)) == 1
 
-        gateway.delete_slack_user(user_1)
+        assert gateway.delete_slack_user(user_1)
 
         assert len(gateway.get_slack_users(app_user_id)) == 0
+
+        assert gateway.delete_slack_user(user_1) is False
 
         gateway.connection.run("ROLLBACK")

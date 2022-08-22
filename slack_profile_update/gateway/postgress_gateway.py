@@ -58,11 +58,12 @@ class PostgressGateway:
             )
             return self._as_slack_user(results)
 
-        def delete_slack_user(self, user: SlackUser):
-            self.connection.run(
-                'DELETE FROM "SlackUser" WHERE "slackID" = :slackID',
+        def delete_slack_user(self, user: SlackUser) -> bool:
+            result = self.connection.run(
+                'DELETE FROM "SlackUser" WHERE "slackID" = :slackID RETURNING *',
                 slackID=self._to_slack_id(user),
             )
+            return bool(result)
 
         def get_linked_users(self, user: SlackUser):
             slack_id = self._to_slack_id(user)
