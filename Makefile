@@ -10,3 +10,6 @@ run-db:
 
 stop-db:
 	docker rm -f posttest
+
+package:
+	poetry run lambda-packager
