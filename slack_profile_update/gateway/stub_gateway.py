@@ -5,6 +5,8 @@ from slack_profile_update.domain.slackuser import SlackUser
 from unittest.mock import MagicMock
 import uuid
 
+from slack_profile_update.gateway.abstract_gateway import AbstractGateway
+
 
 class StubUserGateway:
     def __init__(self, **kwargs):
@@ -14,7 +16,7 @@ class StubUserGateway:
     def open(self):
         yield self._InnerGateway()
 
-    class _InnerGateway:
+    class _InnerGateway(AbstractGateway):
         def __init__(self):
             self.connection = MagicMock()
             self._users = defaultdict(lambda: set())

@@ -156,3 +156,22 @@ def test_connection():
         password="pytestPassword", database=get_db_name()
     ).open() as gateway:
         assert gateway.test_connection() is True
+
+
+def test_delete_slack_user():
+    with PostgressGateway(
+        password="pytestPassword", database=get_db_name()
+    ).open() as gateway:
+        gateway.connection.run("START TRANSACTION")
+
+        app_user_id = gateway.create_app_user()
+        user_1 = SlackUser(user_id="user_1", team_id="team_1", token="test_token_1")
+        gateway.create_slack_user(user_1, app_user_id)
+
+        assert len(gateway.get_slack_users(app_user_id)) == 1
+
+        gateway.delete_slack_user(user_1)
+
+        assert len(gateway.get_slack_users(app_user_id)) == 0
+
+        gateway.connection.run("ROLLBACK")

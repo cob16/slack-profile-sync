@@ -3,6 +3,7 @@ from contextlib import contextmanager
 import pg8000.native
 
 from slack_profile_update.domain.slackuser import SlackUser
+from slack_profile_update.gateway.abstract_gateway import AbstractGateway
 
 
 class PostgressGateway:
@@ -24,7 +25,7 @@ class PostgressGateway:
             if con:
                 con.close()
 
-    class _InnerGateway:
+    class _InnerGateway(AbstractGateway):
         def __init__(self, connection):
             self.connection = connection
 
@@ -56,6 +57,12 @@ class PostgressGateway:
                 userID=app_user_id,
             )
             return self._as_slack_user(results)
+
+        def delete_slack_user(self, user: SlackUser):
+            self.connection.run(
+                'DELETE FROM "SlackUser" WHERE "slackID" = :slackID',
+                slackID=self._to_slack_id(user),
+            )
 
         def get_linked_users(self, user: SlackUser):
             slack_id = self._to_slack_id(user)
