@@ -1,4 +1,5 @@
 # slack-profile-update
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/cob16/slack-profile-sync/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/cob16/slack-profile-sync/tree/main)
 
 ## Purpose
 
