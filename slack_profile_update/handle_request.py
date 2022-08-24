@@ -15,21 +15,15 @@ class HandleRequest:
             if path == "/oauth/authorization_grant":
                 query_strings = event["input"]["multiValueQueryStringParameters"]
                 code = query_strings.get("code", None)
-                state = query_strings.get("state", None)
-                if (
-                    code is not None
-                    and state is not None
-                    and len(code) == 1
-                    and len(state) == 1
-                ):
+                if code is not None and len(code) == 1:
                     response = UserInstall(
                         client_id=environment["CLIENT_ID"],
                         client_secret=environment["CLIENT_SECRET"],
                         redirect_uri=environment["REDIRECT_URI"],
                         user_store=user_store,
-                    ).execute(code[0], state[0])
+                    ).execute(code[0])
                 else:
-                    logging.debug("missing code or state")
+                    logging.debug("missing code param")
                     response.not_found()
             else:
                 response.not_found()

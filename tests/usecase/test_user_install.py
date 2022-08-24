@@ -1,5 +1,7 @@
 import logging
 
+import pytest
+
 from slack_profile_update.domain.slackuser import SlackUser
 from slack_profile_update.gateway import slack
 from slack_profile_update.gateway.slack import AuthorisationGrantResponse
@@ -30,7 +32,7 @@ def test_user_install_stores_token_if_success(mocker):
             redirect_uri="example.com",
             user_store=user_store,
         )
-        response = user_install.execute("foobar", "test-state")
+        response = user_install.execute("foobar")
         assert response.present()["statusCode"] == 200
 
         assert len(user_store._users.keys()) == 1
@@ -58,7 +60,7 @@ def test_user_install_fails_if_scope_is_incorrect(mocker):
             redirect_uri="example.com",
             user_store=stub_user_token_store,
         )
-        response = user_install.execute("foobar", "test-state")
+        response = user_install.execute("foobar")
         assert response.present()["statusCode"] == 401
 
 
@@ -129,9 +131,10 @@ def test_user_install_missing_code(caplog):
     assert response["statusCode"] == 404
     assert response["body"] is None
 
-    assert "missing code or state" in caplog.text
+    assert "missing code param" in caplog.text
 
 
+@pytest.mark.skip(reason="slack install button does not suppy state, skipping for now")
 def test_user_install_missing_sate(caplog):
     secret = "is_secret"
     with StubUserGateway().open() as user_store:

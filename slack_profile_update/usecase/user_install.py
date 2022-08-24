@@ -16,14 +16,10 @@ class UserInstall:
         self.__redirect_uri = redirect_uri
         self.__user_store = user_store
 
-    def execute(self, code, state):
+    def execute(self, code):
         logging.debug(
             "received authorization_grant code '%s'",
             code,
-        )
-        logging.debug(
-            "received authorization_grant state '%s'",
-            state,
         )
         gateway_response = slack.authorisation_grant(
             client_id=self.__client_id,
