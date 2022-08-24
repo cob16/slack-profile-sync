@@ -19,7 +19,7 @@ This is the current scope. In the future, we may look to expand what is synced a
 # Testing
 
 ```bash
-poetry install  
+make install
 ```
 
 ```bash

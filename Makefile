@@ -1,3 +1,6 @@
+install: run-db
+	poetry install
+
 test:
 	poetry run pytest
 
