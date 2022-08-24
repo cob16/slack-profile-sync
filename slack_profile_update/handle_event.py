@@ -1,5 +1,6 @@
 import json
 import logging
+from urllib.parse import parse_qs
 
 from slack_profile_update.presenter.api_gateway_response import ApiGatewayResponse
 from slack_profile_update.usecase.update_all_profiles import UpdateAllProfiles
@@ -29,7 +30,11 @@ class HandleEvent:
             response.auth_error()
             return response
 
+        if self.headers.get("Content-Type") == "application/x-www-form-urlencoded":
+            self.raw_body = parse_qs(self.raw_body).get("payload")[0]
+
         body = json.loads(self.raw_body)
+        logging.debug(body)
 
         type = body.get("type")
         if type == "url_verification":
@@ -37,7 +42,7 @@ class HandleEvent:
             response.ok(response_body)
         elif type == "event_callback":
             event = body["event"]
-            logging.info(f"Received event: {event['type']}")
+            logging.info(f"Received event_callback: {event['type']}")
             if event["type"] == "user_change":
                 UpdateAllProfiles(user_store=self.user_store).execute(body)
                 response.ok()
@@ -45,10 +50,13 @@ class HandleEvent:
                 UserUninstall(user_store=self.user_store).execute(body)
                 response.ok()
             else:
-                logging.error("unsupported event_callback %s", event)
+                logging.error("unsupported event_callback")
                 response.ok()
+        elif type == "shortcut":
+            logging.info("shortcut event received")
+            response.ok()
         else:
-            logging.error("event not supported %s", body)
+            logging.error("event not supported")
             response.ok()
 
         return response
