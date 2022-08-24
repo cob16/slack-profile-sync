@@ -40,9 +40,7 @@ class StubUserGateway:
             return []
 
         def delete_slack_user(self, user: SlackUser) -> bool:
-            print(f"removing {self._users.values()}")
             for stored_user_set in self._users.values():
-                print(f"{stored_user_set}")
                 try:
                     stored_user_set.remove(user)
                     return True
