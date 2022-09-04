@@ -1,0 +1,82 @@
+interactions:
+- request:
+    body: '{"trigger_id": "a-trigger-id", "view": {}}'
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '42'
+      Content-Type:
+      - application/json;charset=utf-8
+      Host:
+      - www.slack.com
+      User-Agent:
+      - Python/3.8.0 slackclient/3.8.0 Linux/5.19.6-100.fc35.x86_64
+    method: POST
+    uri: https://www.slack.com/api/views.open
+  response:
+    body:
+      string: '{"ok":true}'
+    headers:
+      access-control-allow-headers:
+      - slack-route, x-slack-version-ts, x-b3-traceid, x-b3-spanid, x-b3-parentspanid,
+        x-b3-sampled, x-b3-flags
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - x-slack-req-id, retry-after
+      cache-control:
+      - private, no-cache, no-store, must-revalidate
+      connection:
+      - close
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sun, 04 Sep 2022 09:39:08 GMT
+      expires:
+      - Mon, 26 Jul 1997 05:00:00 GMT
+      pragma:
+      - no-cache
+      referrer-policy:
+      - no-referrer
+      server:
+      - Apache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains; preload
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      via:
+      - envoy-www-iad-qt90, envoy-edge-lhr-plti
+      x-backend:
+      - main_normal main_bedrock_normal_with_overflow main_canary_with_overflow main_bedrock_canary_with_overflow
+        main_control_with_overflow main_bedrock_control_with_overflow
+      x-content-type-options:
+      - nosniff
+      x-edge-backend:
+      - envoy-www
+      x-envoy-upstream-service-time:
+      - '85'
+      x-powered-by:
+      - HHVM/4.153.1
+      x-robots-tag:
+      - noindex,nofollow
+      x-server:
+      - slack-www-hhvm-main-iad-hglu
+      x-slack-backend:
+      - r
+      x-slack-edge-shared-secret-outcome:
+      - no-match
+      x-slack-req-id:
+      - d784c3df8bb270d65b744ff70be6ea28
+      x-slack-shared-secret-outcome:
+      - no-match
+      x-slack-unique-id:
+      - YxRyPIZveMrUZo7Uy096zAAAAAE
+      x-xss-protection:
+      - '0'
+    status:
+      code: 200
+      message: OK
+version: 1
