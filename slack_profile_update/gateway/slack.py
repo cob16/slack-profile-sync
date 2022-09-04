@@ -51,3 +51,9 @@ def authorisation_grant(client_id, client_secret, code, redirect_uri):
         token=response.data["authed_user"]["access_token"],
         scope=response.data["authed_user"]["scope"],
     )
+
+
+def open_user_dialogue(token, trigger_id: str, view: dict):
+    client = WebClient(token=token)
+    client.views_open(trigger_id=trigger_id, view=view)
+    return True

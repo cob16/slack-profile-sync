@@ -3,6 +3,7 @@ import logging
 import pytest
 
 from slack_profile_update.gateway import slack as slack_gateway
+from slack_profile_update.presenter.slack_user_link_model import SlackUserLinkModel
 
 
 @pytest.mark.vcr
@@ -41,3 +42,11 @@ def test_authorisation_grant_on_success():
     assert response.user == "U019LN451HT"
     assert response.token == "xoxp-123"
     assert response.scope == "users:read,users.profile:write"
+
+
+@pytest.mark.vcr
+def test_open_user_dialogue():
+    response = slack_gateway.open_user_dialogue(
+        token="fake_api_token", trigger_id="a-trigger-id", view={}
+    )
+    assert response

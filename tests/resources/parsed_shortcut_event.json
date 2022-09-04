@@ -1,0 +1,18 @@
+{
+  "type": "shortcut",
+  "token": "394293492304924235lkj234io",
+  "action_ts": "1661371199.902997",
+  "team": {
+    "id": "32EFEFEFJEFFEI",
+    "domain": "workspacename"
+  },
+  "user": {
+    "id": "U01230123HZ",
+    "username": "test_user_01",
+    "team_id": "32EFEFEFJEFFEI"
+  },
+  "is_enterprise_install": false,
+  "enterprise": null,
+  "callback_id": "link_user",
+  "trigger_id": "34534534535.1329838130354.62ecae7cd230cbb33a7f68a4d0b1fc17"
+}

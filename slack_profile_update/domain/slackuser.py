@@ -6,6 +6,7 @@ class SlackUser:
     user_id: str
     team_id: str
     token: str = None
+    app_id: str = None
 
     def __hash__(self):
         return hash((self.user_id, self.team_id))

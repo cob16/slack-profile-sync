@@ -95,3 +95,42 @@ def test_connection():
         password="pytestPassword", database=get_db_name()
     ).open() as gateway:
         assert gateway.test_connection() is True
+
+
+def test_get_slack_user():
+    with StubUserGateway(
+        password="pytestPassword", database=get_db_name()
+    ).open() as gateway:
+        gateway.connection.run("START TRANSACTION")
+
+        app_user_id = gateway.create_app_user()
+        app_user_id_2 = gateway.create_app_user()
+
+        user_1 = SlackUser(user_id="user_1", team_id="team_1", token="test_token_1")
+        user_2 = SlackUser(user_id="user_2", team_id="team_2", token="test_token_2")
+        user_3 = SlackUser(user_id="user_3", team_id="team_3", token="test_token_3")
+
+        gateway.create_slack_user(user_1, app_user_id)
+        gateway.create_slack_user(user_2, app_user_id)
+        gateway.create_slack_user(user_3, app_user_id_2)
+
+        user: SlackUser = gateway.get_slack_user(user_id="user_2", team_id="team_2")
+        assert user.token == user_2.token
+
+        gateway.connection.run("ROLLBACK")
+
+
+def test_get_slack_user_when_not_found():
+    with StubUserGateway(
+        password="pytestPassword", database=get_db_name()
+    ).open() as gateway:
+        gateway.connection.run("START TRANSACTION")
+
+        app_user_id = gateway.create_app_user()
+        user_3 = SlackUser(user_id="user_3", team_id="team_3", token="test_token_3")
+        gateway.create_slack_user(user_3, app_user_id)
+
+        user: SlackUser = gateway.get_slack_user(user_id="user_2", team_id="team_2")
+        assert user is None
+
+        gateway.connection.run("ROLLBACK")

@@ -1,5 +1,6 @@
 from collections import defaultdict
 from contextlib import contextmanager
+from typing import Optional, Any
 
 from slack_profile_update.domain.slackuser import SlackUser
 from unittest.mock import MagicMock
@@ -32,6 +33,14 @@ class StubUserGateway:
 
         def get_slack_users(self, app_user_id):
             return list(self._users[app_user_id])
+
+        def get_slack_user(self, user_id, team_id) -> Optional[SlackUser]:
+            target_user = SlackUser(user_id=user_id, team_id=team_id)
+            for stored_user_set in self._users.values():
+                for user in stored_user_set:
+                    if target_user == user:
+                        return user
+            return None
 
         def get_linked_users(self, user: SlackUser):
             for stored_user_set in self._users.values():

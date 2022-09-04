@@ -3,6 +3,7 @@ import logging
 from urllib.parse import parse_qs
 
 from slack_profile_update.presenter.api_gateway_response import ApiGatewayResponse
+from slack_profile_update.usecase.show_link_user_flow import ShowUserLinkFlow
 from slack_profile_update.usecase.update_all_profiles import UpdateAllProfiles
 from slack_profile_update.usecase.url_verification import UrlVerification
 from slack_profile_update.usecase.user_uninstall import UserUninstall
@@ -54,6 +55,10 @@ class HandleEvent:
                 response.ok()
         elif type == "shortcut":
             logging.info("shortcut event received")
+            ShowUserLinkFlow(user_store=self.user_store).execute(body)
+            response.ok()
+        elif type == "view_submission":
+            logging.info("view_submission event received")
             response.ok()
         else:
             logging.error("event not supported")
