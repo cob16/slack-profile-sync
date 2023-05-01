@@ -6,7 +6,7 @@ authors = ["cob16 <public+github@cormacbrady.info>"]
 
 [tool.poetry.dependencies]
 python = "^3.8.0"
-slack-sdk = "^3.3.0"
+slack-sdk = "^3.21.3"
 pg8000 = "^1.29.1"
 
 [tool.poetry.dev-dependencies]
