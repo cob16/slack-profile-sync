@@ -7,7 +7,7 @@ authors = ["cob16 <public+github@cormacbrady.info>"]
 [tool.poetry.dependencies]
 python = "^3.8.0"
 slack-sdk = "^3.3.0"
-pg8000 = "^1.29.1"
+pg8000 = "^1.29.6"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1"
